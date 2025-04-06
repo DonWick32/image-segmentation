@@ -1,12 +1,12 @@
 # sam2_model.py
 import torch
-from SAM.sam2.training.model.sam2 import SAM2Train
-from SAM.sam2.sam2.modeling.backbones.image_encoder import ImageEncoder, FpnNeck
-from SAM.sam2.sam2.modeling.backbones.hieradet import Hiera
-from SAM.sam2.sam2.modeling.position_encoding import PositionEmbeddingSine
-from SAM.sam2.sam2.modeling.memory_attention import MemoryAttention, MemoryAttentionLayer
-from SAM.sam2.sam2.modeling.sam.transformer import RoPEAttention
-from SAM.sam2.sam2.modeling.memory_encoder import MemoryEncoder, MaskDownSampler, Fuser, CXBlock
+from SAM2.sam2.training.model.sam2 import SAM2Train
+from SAM2.sam2.sam2.modeling.backbones.image_encoder import ImageEncoder, FpnNeck
+from SAM2.sam2.sam2.modeling.backbones.hieradet import Hiera
+from SAM2.sam2.sam2.modeling.position_encoding import PositionEmbeddingSine
+from SAM2.sam2.sam2.modeling.memory_attention import MemoryAttention, MemoryAttentionLayer
+from SAM2.sam2.sam2.modeling.sam.transformer import RoPEAttention
+from SAM2.sam2.sam2.modeling.memory_encoder import MemoryEncoder, MaskDownSampler, Fuser, CXBlock
 
 def build_base_model():
     trunk = Hiera(embed_dim=112, num_heads=2)

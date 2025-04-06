@@ -1,10 +1,10 @@
 # sam2_dataset.py
-from SAM.sam2.training.utils.data_utils import Frame, Object, VideoDatapoint
+from SAM2.sam2.training.utils.data_utils import Frame, Object, VideoDatapoint
 from torchvision.datasets.vision import VisionDataset
 from PIL import Image as PILImage
 from iopath.common.file_io import g_pathmgr
 from functools import partial
-from SAM.sam2.training.utils.data_utils import collate_fn
+from SAM2.sam2.training.utils.data_utils import collate_fn
 import numpy as np
 import os, cv2
 from tqdm.auto import tqdm
@@ -17,7 +17,7 @@ import torch
 from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
 
-from SAM.sam2.training.dataset.transforms import (
+from SAM2.sam2.training.dataset.transforms import (
     ComposeAPI, RandomHorizontalFlip, RandomAffine,
     RandomResizeAPI, ColorJitter, ToTensorAPI,
     NormalizeAPI

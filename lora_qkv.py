@@ -2,10 +2,10 @@ import torch
 import numpy as np
 from torch import Tensor
 import torch.nn as nn
-from SAM.sam2.sam2.modeling.sam2_base import SAM2Base
+from SAM2.sam2.sam2.modeling.sam2_base import SAM2Base
 from safetensors.torch import save_file
 from safetensors import safe_open
-from SAM.sam2.sam2.modeling.sam.transformer import Attention
+from SAM2.sam2.sam2.modeling.sam.transformer import Attention
 import torch.nn.functional as F
 
 class Attention_LoRA(nn.Module):

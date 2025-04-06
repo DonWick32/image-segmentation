@@ -60,7 +60,7 @@ import torch
 from iopath.common.file_io import g_pathmgr
 from PIL import Image as PILImage
 from torchvision.datasets.vision import VisionDataset
-from SAM.sam2.training.utils.data_utils import Frame, Object, VideoDatapoint
+from SAM2.sam2.training.utils.data_utils import Frame, Object, VideoDatapoint
 
 
 class VOSDataset(VisionDataset):
@@ -204,7 +204,7 @@ def load_images(frames):
 
 
 
-from SAM.sam2.training.dataset.transforms import (
+from SAM2.sam2.training.dataset.transforms import (
     ComposeAPI,
     RandomHorizontalFlip,
     RandomAffine,
@@ -251,15 +251,15 @@ dataset = VOSDataset(transforms=train_transform,
 
 
 
-from SAM.sam2.sam2.modeling.sam2_base import SAM2Base
-from SAM.sam2.sam2.modeling.backbones.image_encoder import ImageEncoder, FpnNeck
-from SAM.sam2.sam2.modeling.backbones.hieradet import Hiera
-from SAM.sam2.sam2.modeling.position_encoding import PositionEmbeddingSine
-from SAM.sam2.sam2.modeling.memory_attention import MemoryAttention, MemoryAttentionLayer
-from SAM.sam2.sam2.modeling.sam.transformer import RoPEAttention
-from SAM.sam2.sam2.modeling.memory_encoder import MemoryEncoder, MaskDownSampler, Fuser, CXBlock
-from SAM.sam2.sam2.modeling.position_encoding import PositionEmbeddingSine
-from SAM.sam2.sam2.modeling.backbones.hieradet import Hiera
+from SAM2.sam2.sam2.modeling.sam2_base import SAM2Base
+from SAM2.sam2.sam2.modeling.backbones.image_encoder import ImageEncoder, FpnNeck
+from SAM2.sam2.sam2.modeling.backbones.hieradet import Hiera
+from SAM2.sam2.sam2.modeling.position_encoding import PositionEmbeddingSine
+from SAM2.sam2.sam2.modeling.memory_attention import MemoryAttention, MemoryAttentionLayer
+from SAM2.sam2.sam2.modeling.sam.transformer import RoPEAttention
+from SAM2.sam2.sam2.modeling.memory_encoder import MemoryEncoder, MaskDownSampler, Fuser, CXBlock
+from SAM2.sam2.sam2.modeling.position_encoding import PositionEmbeddingSine
+from SAM2.sam2.sam2.modeling.backbones.hieradet import Hiera
 
 
 trunk = Hiera(
@@ -361,11 +361,11 @@ memory_encoder = MemoryEncoder(
 )
 
 
-from SAM.sam2.training.model.sam2 import SAM2Train
+from SAM2.sam2.training.model.sam2 import SAM2Train
 import importlib
-import SAM.sam2.training.utils.data_utils
-importlib.reload(SAM.sam2.training.model.sam2)
-from SAM.sam2.training.model.sam2 import SAM2Train
+import SAM2.sam2.training.utils.data_utils
+importlib.reload(SAM2.sam2.training.model.sam2)
+from SAM2.sam2.training.model.sam2 import SAM2Train
 model = SAM2Train(
     image_encoder,
     memory_attention=memory_attention,
@@ -414,9 +414,9 @@ model = SAM2Train(
 
 
 import importlib
-import SAM.sam2.training.utils.data_utils
-importlib.reload(SAM.sam2.training.utils.data_utils)
-from SAM.sam2.training.utils.data_utils import collate_fn
+import SAM2.sam2.training.utils.data_utils
+importlib.reload(SAM2.sam2.training.utils.data_utils)
+from SAM2.sam2.training.utils.data_utils import collate_fn
 
 from torch.utils.data import DataLoader
 from functools import partial
@@ -454,7 +454,7 @@ targets = batch.masks
 # In[30]:
 
 
-from SAM.sam2.training.loss_fns import MultiStepMultiMasksAndIous
+from SAM2.sam2.training.loss_fns import MultiStepMultiMasksAndIous
 
 
         

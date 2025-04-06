@@ -7,7 +7,7 @@ import json
 import cv2
 import gc
 from tqdm import tqdm
-from SAM.sam2.sam2.build_sam import build_sam2_video_predictor
+from SAM2.sam2.sam2.build_sam import build_sam2_video_predictor
 
 def calculate_iou(TP, FP, FN):
 	return TP / (TP + FP + FN)
