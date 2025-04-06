@@ -170,36 +170,36 @@ def train():
             train_loader.sampler.set_epoch(epoch)
             val_loader.sampler.set_epoch(epoch)
             model.module.training = False
-            # if is_main_process():
-            #     if (epoch == config.epochs - 1) or (epoch % config.cl_config.evaluate_every_n_epochs == 0):
-            #         for perf_list, type_ in zip([val_performance, train_performance], ['val', 'train']):
-            #             print(f"Evaluating {type_} performance from current domain {domain}")
-            #             perf_total = {}
-            #             for domain_prev in DOMAINS[:domain_idx+1]:
-            #                 print(f"Evaluating prev domain: {domain_prev} performance")
-            #                 annot_file = "val" if type_ == "train" else "test"
-            #                 perf = run_eval(model.module, monitor_vids[type_], domain, os.path.join(config.dataset.annotation_path, f"{annot_file}.json"))
-            #                 perf_total[domain_prev] = perf
-            #                 for k, v in perf.items():
-            #                     wandb.log({f"{type_}_perf/{domain_prev}/{k}": v})
-            #                 print(f"Performance of {domain_prev} domain: {perf}")
-            #             insert_perf(perf_list, perf_total)
-            #             calculate_forgetting(perf_list, domain_idx, tag=type_)
+            if is_main_process():
+                if (epoch == config.epochs - 1) or (epoch % config.cl_config.evaluate_every_n_epochs == 0):
+                    for perf_list, type_ in zip([val_performance, train_performance], ['val', 'train']):
+                        print(f"Evaluating {type_} performance from current domain {domain}")
+                        perf_total = {}
+                        for domain_prev in DOMAINS[:domain_idx+1]:
+                            print(f"Evaluating prev domain: {domain_prev} performance")
+                            annot_file = "val" if type_ == "train" else "test"
+                            perf = run_eval(model.module, monitor_vids[type_], domain, os.path.join(config.dataset.annotation_path, f"{annot_file}.json"))
+                            perf_total[domain_prev] = perf
+                            for k, v in perf.items():
+                                wandb.log({f"{type_}_perf/{domain_prev}/{k}": v})
+                            print(f"Performance of {domain_prev} domain: {perf}")
+                        insert_perf(perf_list, perf_total)
+                        calculate_forgetting(perf_list, domain_idx, tag=type_)
 
-            #     if epoch == config.epochs - 1:
-            #         print(f"Evaluating test performance from current domain {domain}")
-            #         perf_total = {}
-            #         for domain_prev in DOMAINS[:domain_idx+1]:
-            #             print(f"Evaluating prev domain: {domain_prev} performance")
-            #             perf_total[domain_prev] = []
-            #             for i, vids in enumerate(TEST_VIDS):
-            #                 perf = run_eval(model.module, vids, domain, os.path.join(config.dataset.annotation_path, "test.json"))
-            #                 perf_total[domain_prev].append(perf)
-            #                 for k, v in perf.items():
-            #                     wandb.log({f"test_perf/{domain_prev}/vid_{i}/{k}": v})
-            #                 print(f"{vids} Performance of {domain_prev} domain: {perf}")
-            #         insert_perf(test_performance, perf_total)
-            #         calculate_forgetting(test_performance, domain_idx)
+                if epoch == config.epochs - 1:
+                    print(f"Evaluating test performance from current domain {domain}")
+                    perf_total = {}
+                    for domain_prev in DOMAINS[:domain_idx+1]:
+                        print(f"Evaluating prev domain: {domain_prev} performance")
+                        perf_total[domain_prev] = []
+                        for i, vids in enumerate(TEST_VIDS):
+                            perf = run_eval(model.module, vids, domain, os.path.join(config.dataset.annotation_path, "test.json"))
+                            perf_total[domain_prev].append(perf)
+                            for k, v in perf.items():
+                                wandb.log({f"test_perf/{domain_prev}/vid_{i}/{k}": v})
+                            print(f"{vids} Performance of {domain_prev} domain: {perf}")
+                    insert_perf(test_performance, perf_total)
+                    calculate_forgetting(test_performance, domain_idx)
                     
             torch.distributed.barrier()
             model.train()

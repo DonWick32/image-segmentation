@@ -4,7 +4,7 @@ device: cuda
 batch_size: 1
 num_workers: 0
 learning_rate: 0.0001
-epochs: 2
+epochs: 10
 distributed: true
 
 # output_dir: "output"
@@ -36,4 +36,4 @@ loss_config:
   focal_alpha_obj_score: -1.0
 
 cl_config:
-  evaluate_every_n_epochs: 5
+  evaluate_every_n_epochs: 3
