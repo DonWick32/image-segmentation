@@ -1,0 +1,207 @@
+import torch
+from torch.utils.data import DataLoader
+from collections import defaultdict
+from tqdm import tqdm
+import os
+import wandb
+
+from sam2_dataset import get_dataloader
+from sam2_model import get_model, _load_checkpoint
+
+from SAM.sam2.training.loss_fns import MultiStepMultiMasksAndIous
+from lora_qkv import wrap_decoder_lora, wrap_image_encoder_lora, custom_save_lora_parameters, custom_load_lora_parameters
+from omegaconf import OmegaConf
+import gc
+from evaluate import run_eval
+
+def seed_everything(seed=42):
+    import random
+    import numpy as np
+    import torch
+
+    random.seed(seed)
+    np.random.seed(seed)
+    torch.manual_seed(seed)
+    if torch.cuda.is_available():
+        torch.cuda.manual_seed_all(seed)
+
+DOMAINS = ['regular', 'blood', 'bg_change', 'smoke', 'low_brightness']
+
+config = OmegaConf.load("config.yaml")
+
+wandb.init(project="CL-SAM2", config=dict(config), config=OmegaConf.to_container(config),
+        notes=config.notes,
+        entity=config.wandb_name,
+        mode="online")
+
+track_file_Type = [".py",".sh", ".yaml", "ipynb", ".json", ".txt"]
+wandb.run.log_code(".",include_fn=lambda path: (any([path.endswith(file_type) for file_type in track_file_Type])) and ("wandb" not in path) and (config.outputdir not in path))
+run_id = wandb.run.id
+if not os.path.exists(config.output_dir):
+    os.makedirs(config.output_dir)
+    os.makedirs(os.path.join(config.output_dir, run_id))
+
+PATH = config.dataset.path
+TEST_PATH = os.path.join(PATH, "SegSTRONGC_test/test/9/")
+TRAIN_PATH = os.path.join(PATH, "SegSTRONGC_val/val/1/")
+TRAIN_VIDS = [os.path.join(TRAIN_PATH, i) for i in sorted(os.listdir(TRAIN_PATH), key=lambda x: int(x))]
+TEST_VIDS = [os.path.join(TEST_PATH, i) for i in sorted(os.listdir(TEST_PATH), key=lambda x: int(x))]
+VAL_VIDS = TEST_VIDS[:1]
+TEST_VIDS = TEST_VIDS[1:]
+
+print("Test videos:", TEST_VIDS)
+print("Train videos:", TRAIN_VIDS)
+print("Val videos:", VAL_VIDS)
+
+monitor_vids = {'train': TRAIN_VIDS[0], 'val': VAL_VIDS[0]}
+
+weight_dict = config.loss_weights
+loss_cfg = config.loss_config
+criterion = MultiStepMultiMasksAndIous(
+        weight_dict=weight_dict,
+        supervise_all_iou=loss_cfg.supervise_all_iou,
+        iou_use_l1_loss=loss_cfg.iou_use_l1_loss,
+        pred_obj_scores=loss_cfg.pred_obj_scores,
+        focal_gamma_obj_score=loss_cfg.focal_gamma_obj_score,
+        focal_alpha_obj_score=loss_cfg.focal_alpha_obj_score,
+    )
+
+device = torch.device(config.device if torch.cuda.is_available() else "cpu")
+
+model = get_model(config).train()
+_load_checkpoint(model, config.model.checkpoint)
+
+print("Total parameters:", sum(p.numel() for p in model.parameters() if p.requires_grad))
+
+for param in model.parameters():
+    param.requires_grad = False
+
+wrap_decoder_lora(model, 8)
+wrap_image_encoder_lora(model, 8)
+
+trainable_param_count = sum(p.numel() for p in model.parameters() if p.requires_grad)
+print("Trainable LoRA parameters:", trainable_param_count)
+wandb.log({"trainable_lora_params": trainable_param_count})
+
+model.to(device)
+model.train()
+model.training = True
+
+trainable_params = [param for name, param in model.named_parameters() if param.requires_grad]
+optimizer = torch.optim.AdamW(trainable_params, lr=config.learning_rate)
+
+val_performance = {i:[] for i in DOMAINS}
+train_performance = {i:[] for i in DOMAINS}
+test_performance = {i:[] for i in DOMAINS}
+log_metrics_history = {}
+
+def insert_perf(perf_dict, new_perf):
+    for key in new_perf.keys():
+        perf_dict[key].append(new_perf[key])
+
+def calculate_forgetting(perf_dict, domain_idx, tag="train"):
+    for i, domain in enumerate(DOMAINS[:domain_idx]):
+        print("Domain performance history of domain", domain, perf_dict[domain])
+        if type(perf_dict[domain][-1]) == list:  
+            for metric in perf_dict[domain][-1][-1].keys():
+                avg_forgetting = 0
+                avg_forgetting_prev = 0
+                for idx in range(3):
+                    f = perf_dict[domain][-1][idx][metric] - perf_dict[domain][0][idx][metric]
+                    f_prev = perf_dict[domain][-1][idx][metric] - perf_dict[domain][-2][idx][metric]
+                    avg_forgetting += f
+                    avg_forgetting_prev += f_prev
+                    wandb.log({f"metrics/test_forgetting_{domain}_video_{idx}_{metric}": f})
+                    print("Metric", metric, "of domain", domain, ":", perf_dict[domain][-1][idx][metric])
+                    print("Forgetting of domain", domain, ":", f)
+                avg_forgetting /= 3
+                avg_forgetting_prev /= 3
+                print("Average forgetting:", avg_forgetting)
+                wandb.log({f"metrics/test_avg_forgetting_{domain}_{metric}": avg_forgetting})
+        else:
+            for metric in perf_dict[domain][-1].keys():
+                f = perf_dict[domain][-1][metric] - perf_dict[domain][0][metric]
+                f_prev = perf_dict[domain][-1][metric] - perf_dict[domain][-2][metric]
+                wandb.log({f"metrics/{tag}_forgetting_{domain}_{metric}": f})
+                print("Metric", metric, "of domain", domain, ":", perf_dict[domain][-1][metric])
+                print("Forgetting of domain", domain, ":", f)
+
+def train():
+    for domain_idx, domain in enumerate(DOMAINS):
+        print(f"===================Training on domain: {domain}===================")
+        train_loader, val_loader = get_dataloader(domain, config)
+
+        for epoch in range(0, config.epochs):
+            model.training = False
+            if (epoch == config.epochs - 1) or (epoch % config.cl_config.evaluate_every_n_epochs == 0):
+                for perf_list, type_ in zip([train_performance, val_performance], ['train', 'val']):
+                    print(f"Evaluating {type_} performance from current domain {domain}")
+                    perf_total = {}
+                    for domain_prev in DOMAINS[:domain_idx+1]:
+                        print(f"Evaluating prev domain: {domain_prev} performance")
+                        annot_file = "val" if "train" else "test"
+                        perf = run_eval(model, monitor_vids[type_], domain, os.path.join(config.dataset.annotation_path, f"{annot_file}.json"))
+                        perf_total[domain_prev] = perf
+                        for k, v in perf.items():
+                            wandb.log({f"{type_}_perf/{domain_prev}/{k}": v})
+                        print(f"Performance of {domain_prev} domain: {perf}")
+                    insert_perf(perf_list, perf_total)
+                    calculate_forgetting(perf_list, domain_idx, tag=type_)
+
+            if epoch == config.epochs - 1:
+                print(f"Evaluating test performance from current domain {domain}")
+                perf_total = {}
+                for domain_prev in DOMAINS[:domain_idx+1]:
+                    print(f"Evaluating prev domain: {domain_prev} performance")
+                    perf_total[domain_prev] = []
+                    for i, vids in enumerate(TEST_VIDS):
+                        perf = run_eval(model, vids, domain, os.path.join(config.dataset.annotation_path, "test.json"))
+                        perf_total[domain_prev].append(perf)
+                        for k, v in perf.items():
+                            wandb.log({f"test_perf/{domain_prev}/vid_{i}/{k}": v})
+                        print(f"{vids} Performance of {domain_prev} domain: {perf}")
+                insert_perf(test_performance, perf_total)
+                calculate_forgetting(test_performance, domain_idx)
+
+            model.train()
+            model.training = True
+            print(f"=============Epoch {epoch+1}=============")
+            for batch in tqdm(train_loader, desc=f"Epoch {epoch+1}"):
+                batch = batch.to(device)
+                optimizer.zero_grad()
+                output = model(batch)
+                losses = criterion(output, batch.masks)
+
+                for k, v in losses.items():
+                    wandb.log({f"metric/train_loss_{k}": v.item(), "epoch": epoch + 1})
+                    print(k, v.item())
+
+                loss_key, core_loss = losses.popitem()
+                core_loss.backward()
+                optimizer.step()
+
+                del losses, batch, core_loss, output
+                torch.cuda.empty_cache()
+                gc.collect()
+
+            with torch.no_grad():
+                for batch in val_loader:
+                    batch = batch.to(device)
+                    output = model(batch)
+                    losses = criterion(output, batch.masks)
+
+                    for k, v in losses.items():
+                        wandb.log({f"metric/val_loss_{k}": v.item(), "epoch": epoch + 1})
+                        print(k, v.item())
+
+                    del losses, batch, output
+                    torch.cuda.empty_cache()
+                    gc.collect()
+                    
+                    
+            custom_save_lora_parameters(model, os.path.join(config.output_dir, run_id, f"lora_{domain}.pth"))
+            
+
+
+if __name__ == '__main__':
+    train()

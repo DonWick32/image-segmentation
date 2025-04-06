@@ -1,0 +1,36 @@
+notes: "LoRA naive training sam-base"
+entity: "frozenwolf"
+device: cuda
+batch_size: 2
+num_workers: 0
+learning_rate: 0.0001
+epochs: 2
+
+outputdir: "output"
+
+model:
+  # checkpoint: "checkpoints/sam2.1_hiera_small.pt" 
+  checkpoint: "checkpoints/sam2.1_hiera_base_plus.pt"
+
+dataset:
+  path: "../segstrong"
+  max_frames: 3
+  min_frames: 1
+  max_frame_interval_skip: 3
+  annotation_path:  "annotations/auto/"
+
+loss_weights:
+  loss_mask: 20
+  loss_dice: 1
+  loss_iou: 1
+  loss_class: 1
+
+loss_config:
+  supervise_all_iou: true
+  iou_use_l1_loss: true
+  pred_obj_scores: true
+  focal_gamma_obj_score: 0.0
+  focal_alpha_obj_score: -1.0
+
+cl_config:
+  evaluate_every_n_epochs: 5
