@@ -1,10 +1,11 @@
 #!/bin/bash
 
 #SBATCH --job-name=cl_sam2_ddp
-#SBATCH --nodes=3
+#SBATCH --nodes=1
 #SBATCH --gres=gpu:2
 #SBATCH --partition=gpu
-#SBATCH --output=/scratch/gokuladethya.cse.nitt/fyp
+#SBATCH --output=/scratch/gokuladethya.cse.nitt/fyp/slurm-%j.out
+
 
 echo "Allocated Gokul node: jobid:"
 squeue -a | grep gok
@@ -27,7 +28,8 @@ export LOGLEVEL=INFO
 
 # Setup environment
 conda init bash
-source /home/apps/DL/DL-CondaPy3.7/bin/activate
+source /scratch/gokuladethya.cse.nitt/miniconda3/etc/profile.d/conda.sh
+
 conda activate fyp
 export WANDB_API_KEY=283c41dda88b658ba85c2d8ee7d37230f3341d8c
 # Diagnostics
@@ -36,8 +38,10 @@ srun nvidia-smi
 
 # Launch training
 echo "Launching torchrun..."
+ls /scratch/gokuladethya.cse.nitt/image-segmentation/
+
 srun torchrun \
-  --nnodes=3 \
+  --nnodes=1 \
   --nproc_per_node=2 \
   --rdzv_id=$RANDOM \
   --rdzv_backend=c10d \
