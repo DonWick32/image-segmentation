@@ -3,3 +3,4 @@ checkpoints
 *.pth
 *.tar
 __pycache__
+wandb

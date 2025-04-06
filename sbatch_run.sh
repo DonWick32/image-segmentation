@@ -1,0 +1,45 @@
+#!/bin/bash
+
+#SBATCH --job-name=cl_sam2_ddp
+#SBATCH --nodes=3
+#SBATCH --gres=gpu:2
+#SBATCH --partition=gpu
+#SBATCH --output=/scratch/gokuladethya.cse.nitt/fyp
+
+echo "Allocated Gokul node: jobid:"
+squeue -a | grep gok
+echo "------------------------------------"
+
+# Get hostnames of allocated nodes
+nodes=( $(scontrol show hostnames $SLURM_JOB_NODELIST) )
+echo "SLURM_NODELIST: $SLURM_JOB_NODELIST"
+scontrol show hostnames $SLURM_JOB_NODELIST
+
+nodes_array=($nodes)
+head_node=${nodes_array[0]}
+
+# Get IP address of the head node
+head_node_ip=$(srun --nodes=1 --ntasks=1 -w "$head_node" hostname --ip-address | awk '{print $1}')
+echo "Head Node: $head_node"
+echo "Head Node IP: $head_node_ip"
+
+export LOGLEVEL=INFO
+
+# Setup environment
+conda init bash
+source /home/apps/DL/DL-CondaPy3.7/bin/activate
+conda activate fyp
+export WANDB_API_KEY=283c41dda88b658ba85c2d8ee7d37230f3341d8c
+# Diagnostics
+srun python -c "import torch; print(torch.__version__); print(torch.cuda.is_available())"
+srun nvidia-smi
+
+# Launch training
+echo "Launching torchrun..."
+srun torchrun \
+  --nnodes=3 \
+  --nproc_per_node=2 \
+  --rdzv_id=$RANDOM \
+  --rdzv_backend=c10d \
+  --rdzv_endpoint=$head_node_ip:29500 \
+  /scratch/gokuladethya.cse.nitt/image-segmentation/train.py

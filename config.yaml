@@ -5,15 +5,18 @@ batch_size: 2
 num_workers: 0
 learning_rate: 0.0001
 epochs: 2
+distributed: true
 
-outputdir: "output"
+# output_dir: "output"
+output_dir: "/scratch/gokuladethya.cse.nitt/fyp/output"
 
 model:
   # checkpoint: "checkpoints/sam2.1_hiera_small.pt" 
   checkpoint: "checkpoints/sam2.1_hiera_base_plus.pt"
 
 dataset:
-  path: "../segstrong"
+  # path: "../segstrong"
+  path: "../"
   max_frames: 3
   min_frames: 1
   max_frame_interval_skip: 3

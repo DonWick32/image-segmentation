@@ -15,6 +15,7 @@ import numpy as np
 import cv2
 import torch
 from torch.utils.data import DataLoader
+from torch.utils.data.distributed import DistributedSampler
 
 from SAM.sam2.training.dataset.transforms import (
     ComposeAPI, RandomHorizontalFlip, RandomAffine,
@@ -176,7 +177,7 @@ class VOSDataset(VisionDataset):
         return self._get_datapoint(idx)
 
     def __len__(self):
-        return len(self.partition_vids)
+        return 10
 
 
 def load_images(frames):
@@ -296,10 +297,11 @@ def get_dataloader(domain, config):
     train_loader = DataLoader(
         train_dataset,
         batch_size=config.batch_size,
-        shuffle=True,
+        shuffle=False,
         num_workers=config.num_workers,
         collate_fn=partial(collate_fn, dict_key='all'),
         pin_memory=False,
+        sampler=DistributedSampler(train_dataset, shuffle=True) if config.distributed else None,
     )
     
     val_dataset = VOSDataset(
@@ -318,6 +320,7 @@ def get_dataloader(domain, config):
         num_workers=config.num_workers,
         collate_fn=partial(collate_fn, dict_key='all'),
         pin_memory=False,
+        sampler=DistributedSampler(val_dataset, shuffle=False) if config.distributed else None,
     )
     
     return train_loader, val_loader
