@@ -40,11 +40,12 @@ srun nvidia-smi
 echo "Launching torchrun..."
 ls /scratch/gokuladethya.cse.nitt/image-segmentation/
 
+export TORCH_RUN_RDZV_TIMEOUT=3600
+export TORCH_DISTRIBUTED_DEBUG=INFO
 srun torchrun \
   --nnodes=3 \
   --nproc_per_node=2 \
   --rdzv_id=$RANDOM \
   --rdzv_backend=c10d \
   --rdzv_endpoint=$head_node_ip:29500 \
-  --rdzv_timeout=3600 \
   /scratch/gokuladethya.cse.nitt/image-segmentation/train_lora_sam.py
