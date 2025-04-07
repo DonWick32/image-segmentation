@@ -1,11 +1,11 @@
 notes: "LoRA naive training sam-base"
 entity: "frozenwolf"
 device: cuda
-batch_size: 1
+batch_size: 2
 num_workers: 0
 learning_rate: 0.0001
-epochs: 10
-distributed: true
+epochs: 4
+distributed: false
 
 # output_dir: "output"
 output_dir: "/scratch/gokuladethya.cse.nitt/fyp/output"
@@ -17,8 +17,7 @@ model:
 dataset:
   # path: "../segstrong"
   path: "../"
-  max_frames: 9
-  min_frames: 1
+  max_frames: 3 # nbatches = 300/(max_frames//2)
   max_frame_interval_skip: 3
   annotation_path:  "annotations/auto/"
 

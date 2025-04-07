@@ -16,6 +16,7 @@ from lora_qkv import wrap_decoder_lora, wrap_image_encoder_lora, custom_save_lor
 from omegaconf import OmegaConf
 import gc
 from evaluate import run_eval
+from utils import insert_perf, calculate_forgetting
 
 
 def seed_everything(seed=42):
@@ -140,40 +141,9 @@ train_performance = {i:[] for i in DOMAINS}
 test_performance = {i:[] for i in DOMAINS}
 log_metrics_history = {}
 
-def insert_perf(perf_dict, new_perf):
-    for key in new_perf.keys():
-        perf_dict[key].append(new_perf[key])
-
-def calculate_forgetting(perf_dict, domain_idx, tag="train"):
-    for i, domain in enumerate(DOMAINS[:domain_idx]):
-        print("Domain performance history of domain", domain, perf_dict[domain])
-        if type(perf_dict[domain][-1]) == list:  
-            for metric in perf_dict[domain][-1][-1].keys():
-                avg_forgetting = 0
-                avg_forgetting_prev = 0
-                for idx in range(2):
-                    f = perf_dict[domain][-1][idx][metric] - perf_dict[domain][0][idx][metric]
-                    f_prev = perf_dict[domain][-1][idx][metric] - perf_dict[domain][-2][idx][metric]
-                    avg_forgetting += f
-                    avg_forgetting_prev += f_prev
-                    wandb.log({f"metric/test_forgetting_{domain}_video_{idx}_{metric}": f})
-                    print("Video", idx, "Metric", metric, "of domain", domain, ":", perf_dict[domain][-1][idx][metric])
-                    print("Metric", metric, "of domain", domain, ":", perf_dict[domain][-1][idx][metric])
-                    print("Forgetting of domain", domain, ":", f)
-                avg_forgetting /= 3
-                avg_forgetting_prev /= 3
-                print("Average forgetting:", avg_forgetting)
-                wandb.log({f"metric/test_avg_forgetting_{domain}_{metric}": avg_forgetting})
-        else:
-            for metric in perf_dict[domain][-1].keys():
-                f = perf_dict[domain][-1][metric] - perf_dict[domain][0][metric]
-                f_prev = perf_dict[domain][-1][metric] - perf_dict[domain][-2][metric]
-                wandb.log({f"metric/{tag}_forgetting_{domain}_{metric}": f})
-                print("Metric", metric, "of domain", domain, ":", perf_dict[domain][-1][metric])
-                print("Forgetting of domain", domain, ":", f)
-
 def train():
     for domain_idx, domain in enumerate(DOMAINS):
+        torch.distributed.barrier()
         if is_main_process():
             print(f"===================Training on domain: {domain}===================")
 
@@ -184,40 +154,7 @@ def train():
         for epoch in range(0, config.epochs):
             train_loader.sampler.set_epoch(epoch)
             val_loader.sampler.set_epoch(epoch)
-            
-            torch.distributed.barrier()
-            model.module.training = False
-            if is_main_process():
-                if (epoch == config.epochs - 1) or (epoch % config.cl_config.evaluate_every_n_epochs == 0):
-                    for perf_list, type_ in zip([val_performance, train_performance], ['val', 'train']):
-                        print(f"Evaluating {type_} performance from current domain {domain}")
-                        perf_total = {}
-                        for domain_prev in DOMAINS[:domain_idx+1]:
-                            print(f"Evaluating prev domain: {domain_prev} performance")
-                            annot_file = "val" if type_ == "train" else "test"
-                            perf = run_eval(model.module, monitor_vids[type_], domain, os.path.join(config.dataset.annotation_path, f"{annot_file}.json"))
-                            perf_total[domain_prev] = perf
-                            for k, v in perf.items():
-                                wandb.log({f"{type_}_perf/{domain_prev}/{k}": v})
-                            print(f"Performance of {domain_prev} domain: {perf}")
-                        insert_perf(perf_list, perf_total)
-                        calculate_forgetting(perf_list, domain_idx, tag=type_)
-
-                if epoch == config.epochs - 1:
-                    print(f"Evaluating test performance from current domain {domain}")
-                    perf_total = {}
-                    for domain_prev in DOMAINS[:domain_idx+1]:
-                        print(f"Evaluating prev domain: {domain_prev} performance")
-                        perf_total[domain_prev] = []
-                        for i, vids in enumerate(TEST_VIDS):
-                            perf = run_eval(model.module, vids, domain, os.path.join(config.dataset.annotation_path, "test.json"))
-                            perf_total[domain_prev].append(perf)
-                            for k, v in perf.items():
-                                wandb.log({f"test_perf/{domain_prev}/vid_{i}/{k}": v})
-                            print(f"{vids} Performance of {domain_prev} domain: {perf}")
-                    insert_perf(test_performance, perf_total)
-                    calculate_forgetting(test_performance, domain_idx)
-                    
+  
             torch.distributed.barrier()
             model.train()
             model.module.training = True
@@ -251,7 +188,6 @@ def train():
                     if is_main_process():
                         for k, v in losses.items():
                             wandb.log({f"metric/val_loss_{k}": v.item(), "epoch": epoch + 1})
-                            print(k, v.item())
 
                     del losses, batch, output
                     torch.cuda.empty_cache()
@@ -260,6 +196,37 @@ def train():
             torch.distributed.barrier()
             if is_main_process():
                 custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{domain}.pth"))
+                
+                model.module.training = False
+                if (epoch == config.epochs - 1) or (epoch % config.cl_config.evaluate_every_n_epochs == 0):
+                    for perf_list, type_ in zip([val_performance, train_performance], ['val', 'train']):
+                        print(f"Evaluating {type_} performance from current domain {domain}")
+                        perf_total = {}
+                        for domain_prev in DOMAINS[:domain_idx+1]:
+                            print(f"Evaluating prev domain: {domain_prev} performance")
+                            annot_file = "val" if type_ == "train" else "test"
+                            perf = run_eval(model.module, monitor_vids[type_], domain, os.path.join(config.dataset.annotation_path, f"{annot_file}.json"))
+                            perf_total[domain_prev] = perf
+                            for k, v in perf.items():
+                                wandb.log({f"{type_}_perf/{domain_prev}/{k}": v})
+                            print(f"Performance of {domain_prev} domain: {perf}")
+                        insert_perf(perf_list, perf_total)
+                        calculate_forgetting(perf_list, domain_idx, tag=type_)
+
+                if epoch == config.epochs - 1:
+                    print(f"Evaluating test performance from current domain {domain}")
+                    perf_total = {}
+                    for domain_prev in DOMAINS[:domain_idx+1]:
+                        print(f"Evaluating prev domain: {domain_prev} performance")
+                        perf_total[domain_prev] = []
+                        for i, vids in enumerate(TEST_VIDS):
+                            perf = run_eval(model.module, vids, domain, os.path.join(config.dataset.annotation_path, "test.json"))
+                            perf_total[domain_prev].append(perf)
+                            for k, v in perf.items():
+                                wandb.log({f"test_perf/{domain_prev}/vid_{i}/{k}": v})
+                            print(f"{vids} Performance of {domain_prev} domain: {perf}")
+                    insert_perf(test_performance, perf_total)
+                    calculate_forgetting(test_performance, domain_idx)
 
 if __name__ == '__main__':
     seed_everything()

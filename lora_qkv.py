@@ -264,7 +264,7 @@ def custom_save_lora_parameters(model, save_path):
 # save_lora_parameters(model, "lora.pth")
 
 def custom_load_lora_parameters(model, load_path):
-    error = model.load_state_dict(torch.load(load_path), strict=False)
+    error = model.load_state_dict(torch.load(load_path, map_location=next(model.parameters()).device), strict=False)
     for name in error.missing_keys:
         if '_a_q' in name or 'A_q' in name or '_b_q' in name or 'B_q' in name:
             raise ValueError(f"Custom LoRA Missing key in state_dict: {name}")

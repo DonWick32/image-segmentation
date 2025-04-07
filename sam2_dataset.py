@@ -31,11 +31,12 @@ class VOSDataset(VisionDataset):
         videos,
         gt_frames,
         max_frames=3,
-        min_frames=1,
         max_frame_interval_skip=3, ## min: 1, choose every nth frame
+        training=True,
         sliding = 1
     ):
         self.vidoes = videos
+        self.training = training
         self.partition_vids = []
         for vid_n in range(len(videos)):
             for i in range(0, 300-max_frames+1, sliding):
@@ -44,7 +45,6 @@ class VOSDataset(VisionDataset):
         self.gt_frames = gt_frames
         self._transforms = transforms
         self.max_frames = max_frames
-        self.min_frames = min_frames
         self.max_frame_interval_skip = max_frame_interval_skip
         self.cache_gt = {}
 
@@ -52,18 +52,26 @@ class VOSDataset(VisionDataset):
         # start_frame = np.random.randint(0, len(self.video_dataset[idx]) - 10)
         # end_frame = np.random.randint(start_frame + 5, len(self.video_dataset[idx]))
         vid_n, start_frame = self.partition_vids[idx] #297
+        if self.training:
+            start_frame = max(start_frame - np.random.randint(0, self.max_frames), 0)
         total_frames = self.max_frames
         max_interval = min(self.max_frame_interval_skip, (300 - start_frame) // total_frames)
-        frame_skip = np.random.randint(1, max_interval+1)
+        
+        if self.training:
+            frame_skip = np.random.randint(1, max_interval+1)
+        else:
+            frame_skip = 1
+            
         end_frame = start_frame + total_frames * frame_skip
         
         video = self.vidoes[vid_n][start_frame:end_frame:frame_skip]
         gt_frames = self.gt_frames[vid_n][start_frame:end_frame:frame_skip]
         
         ## randomize the direction of the video
-        if np.random.random() > 0.5:
-            video = video[::-1]
-            gt_frames = gt_frames[::-1]
+        if self.training:
+            if np.random.random() > 0.5:
+                video = video[::-1]
+                gt_frames = gt_frames[::-1]
         
         frame_num_list = list(range(0, end_frame-start_frame))
         
@@ -291,8 +299,9 @@ def get_dataloader(domain, config):
         videos=train_set[domain], 
         gt_frames=train_gt,
         max_frames=config.dataset.max_frames,
-        min_frames=config.dataset.min_frames,
+        sliding=config.dataset.max_frames//2,
         max_frame_interval_skip=config.dataset.max_frame_interval_skip,
+        training=True
     )
 
     train_loader = DataLoader(
@@ -310,9 +319,9 @@ def get_dataloader(domain, config):
         videos=val_set[domain], 
         gt_frames=val_gt,
         max_frames=config.dataset.max_frames,
-        min_frames=config.dataset.min_frames,
         max_frame_interval_skip=config.dataset.max_frame_interval_skip,
-        sliding=config.dataset.max_frames
+        sliding=config.dataset.max_frames,
+        training=False
     )
     
     val_loader = DataLoader(
@@ -326,5 +335,73 @@ def get_dataloader(domain, config):
     )
     
     return train_loader, val_loader
+
+def get_train_dataloader(config):
     
+    test_set, _, test_gt, _, val_set, val_gt = get_set(config)
+
+    PATH = config.dataset.path
+    TRAIN_PATH = os.path.join(PATH, "SegSTRONGC_train/")
+
+    vids = []
+    for folder in sorted(os.listdir(TRAIN_PATH), key=lambda x: int(x)):
+        for vid in sorted(os.listdir(os.path.join(TRAIN_PATH, folder)), key=lambda x: int(x)):
+            vids.append(os.path.join(TRAIN_PATH, folder, vid))
+
+    train, train_gt = [], []
+    for path in vids:
+        set_ = []
+        for type_ in ['regular', 'ground_truth']:
+            set_.append([])
+            for view in ['left', 'right']:
+                temp_set = []
+                for img in os.listdir(os.path.join(path, type_, view)):
+                    temp_set.append(os.path.join(path, type_, view, img))
+                temp_set = sorted(temp_set, key=lambda x: int(x.split('/')[-1].split('.')[0]))
+                set_[-1].append(temp_set)
+                
+        train+= set_[0]
+        train_gt += set_[1]
+
+
+    train_dataset = VOSDataset(
+        transforms=train_transform, 
+        videos=train, 
+        gt_frames=train_gt,
+        max_frames=config.dataset.max_frames,
+        max_frame_interval_skip=config.dataset.max_frame_interval_skip,
+        training=True,
+        sliding=config.dataset.max_frames//2
+    )
+
+    train_loader = DataLoader(
+        train_dataset,
+        batch_size=config.batch_size,
+        shuffle=False,
+        num_workers=config.num_workers,
+        collate_fn=partial(collate_fn, dict_key='all'),
+        pin_memory=False,
+        sampler=DistributedSampler(train_dataset, shuffle=True) if config.distributed else None,
+    )
     
+    val_dataset = VOSDataset(
+        transforms=val_transform, 
+        videos=val_set['regular'], 
+        gt_frames=val_gt,
+        max_frames=config.dataset.max_frames,
+        max_frame_interval_skip=config.dataset.max_frame_interval_skip,
+        sliding=config.dataset.max_frames,
+        training=False
+    )
+    
+    val_loader = DataLoader(
+        val_dataset,
+        batch_size=config.batch_size,
+        shuffle=False,
+        num_workers=config.num_workers,
+        collate_fn=partial(collate_fn, dict_key='all'),
+        pin_memory=False,
+        sampler=DistributedSampler(val_dataset, shuffle=False) if config.distributed else None,
+    )
+    
+    return train_loader, val_loader
