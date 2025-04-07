@@ -6,6 +6,7 @@ from collections import defaultdict
 from tqdm import tqdm
 import os
 import wandb
+from datetime import timedelta
 
 from sam2_dataset import get_dataloader
 from sam2_model import get_model, _load_checkpoint
@@ -27,14 +28,27 @@ def seed_everything(seed=42):
         torch.cuda.manual_seed_all(seed)
 
 def setup_distributed():
-    dist.init_process_group(backend="nccl")
+    dist.init_process_group(backend="nccl", timeout=timedelta(hours=5))
     torch.cuda.set_device(int(os.environ["LOCAL_RANK"]))
+    node_rank = int(os.environ.get("NODE_RANK", 0))  # Default to 0 if not set
+
+    # Global rank (unique ID for each process)
+    global_rank = dist.get_rank()
+
+    # Local rank (which GPU within a node)
+    local_rank = int(os.environ.get("LOCAL_RANK", 0))  # This is set by torchrun
+
+    # World size (total number of processes across all nodes)
+    world_size = dist.get_world_size()
+
+    print(f"Node Rank: {node_rank}, Global Rank: {global_rank}, Local Rank (GPU): {local_rank}, World Size: {world_size}")
+
 
 def cleanup_distributed():
     dist.destroy_process_group()
 
 def is_main_process():
-    return dist.get_rank() == 0
+    return (dist.get_rank() == 0)
 
 setup_distributed()
 
@@ -169,6 +183,8 @@ def train():
         for epoch in range(0, config.epochs):
             train_loader.sampler.set_epoch(epoch)
             val_loader.sampler.set_epoch(epoch)
+            
+            torch.distributed.barrier()
             model.module.training = False
             if is_main_process():
                 if (epoch == config.epochs - 1) or (epoch % config.cl_config.evaluate_every_n_epochs == 0):

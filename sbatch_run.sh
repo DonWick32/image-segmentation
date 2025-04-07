@@ -1,11 +1,11 @@
 #!/bin/bash
 
 #SBATCH --job-name=cl_sam2_ddp
-#SBATCH --nodes=2
+#SBATCH --nodes=1
 #SBATCH --gres=gpu:2
 #SBATCH --partition=gpu
 #SBATCH --output=/scratch/gokuladethya.cse.nitt/fyp/slurm-%j.out
-
+#SBATCH --time=24:00:00
 
 echo "Allocated Gokul node: jobid:"
 squeue -a | grep gok
@@ -41,7 +41,7 @@ echo "Launching torchrun..."
 ls /scratch/gokuladethya.cse.nitt/image-segmentation/
 
 srun torchrun \
-  --nnodes=2 \
+  --nnodes=1 \
   --nproc_per_node=2 \
   --rdzv_id=$RANDOM \
   --rdzv_backend=c10d \
