@@ -40,7 +40,8 @@ srun nvidia-smi
 echo "Launching torchrun..."
 ls /scratch/gokuladethya.cse.nitt/image-segmentation/
 
-srun TORCH_DISTRIBUTED_DEBUG=INFO torchrun \
+export TORCH_DISTRIBUTED_DEBUG=INFO
+srun torchrun \
   --nnodes=3 \
   --nproc_per_node=2 \
   --rdzv_id=$RANDOM \
