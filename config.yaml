@@ -36,4 +36,4 @@ loss_config:
   focal_alpha_obj_score: -1.0
 
 cl_config:
-  evaluate_every_n_epochs: 3
+  evaluate_every_n_epochs: 10

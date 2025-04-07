@@ -33,11 +33,12 @@ class VOSDataset(VisionDataset):
         max_frames=3,
         min_frames=1,
         max_frame_interval_skip=3, ## min: 1, choose every nth frame
+        sliding = 1
     ):
         self.vidoes = videos
         self.partition_vids = []
         for vid_n in range(len(videos)):
-            for i in range(0, 300-max_frames+1):
+            for i in range(0, 300-max_frames+1, sliding):
                 self.partition_vids.append([vid_n, i])
             
         self.gt_frames = gt_frames
@@ -177,7 +178,7 @@ class VOSDataset(VisionDataset):
         return self._get_datapoint(idx)
 
     def __len__(self):
-        return 10
+        return len(self.partition_vids)
 
 
 def load_images(frames):
@@ -311,6 +312,7 @@ def get_dataloader(domain, config):
         max_frames=config.dataset.max_frames,
         min_frames=config.dataset.min_frames,
         max_frame_interval_skip=config.dataset.max_frame_interval_skip,
+        sliding=config.dataset.max_frames
     )
     
     val_loader = DataLoader(

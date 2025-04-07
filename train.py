@@ -151,23 +151,24 @@ def calculate_forgetting(perf_dict, domain_idx, tag="train"):
             for metric in perf_dict[domain][-1][-1].keys():
                 avg_forgetting = 0
                 avg_forgetting_prev = 0
-                for idx in range(3):
+                for idx in range(2):
                     f = perf_dict[domain][-1][idx][metric] - perf_dict[domain][0][idx][metric]
                     f_prev = perf_dict[domain][-1][idx][metric] - perf_dict[domain][-2][idx][metric]
                     avg_forgetting += f
                     avg_forgetting_prev += f_prev
-                    wandb.log({f"metrics/test_forgetting_{domain}_video_{idx}_{metric}": f})
+                    wandb.log({f"metric/test_forgetting_{domain}_video_{idx}_{metric}": f})
+                    print("Video", idx, "Metric", metric, "of domain", domain, ":", perf_dict[domain][-1][idx][metric])
                     print("Metric", metric, "of domain", domain, ":", perf_dict[domain][-1][idx][metric])
                     print("Forgetting of domain", domain, ":", f)
                 avg_forgetting /= 3
                 avg_forgetting_prev /= 3
                 print("Average forgetting:", avg_forgetting)
-                wandb.log({f"metrics/test_avg_forgetting_{domain}_{metric}": avg_forgetting})
+                wandb.log({f"metric/test_avg_forgetting_{domain}_{metric}": avg_forgetting})
         else:
             for metric in perf_dict[domain][-1].keys():
                 f = perf_dict[domain][-1][metric] - perf_dict[domain][0][metric]
                 f_prev = perf_dict[domain][-1][metric] - perf_dict[domain][-2][metric]
-                wandb.log({f"metrics/{tag}_forgetting_{domain}_{metric}": f})
+                wandb.log({f"metric/{tag}_forgetting_{domain}_{metric}": f})
                 print("Metric", metric, "of domain", domain, ":", perf_dict[domain][-1][metric])
                 print("Forgetting of domain", domain, ":", f)
 
