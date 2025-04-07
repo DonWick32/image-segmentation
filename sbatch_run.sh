@@ -47,5 +47,5 @@ srun torchrun \
   --rdzv_id=$RANDOM \
   --rdzv_backend=c10d \
   --rdzv_endpoint=$head_node_ip:29500 \
-  --rdzv_timeout=3600
+  --rdzv_timeout=3600 \
   /scratch/gokuladethya.cse.nitt/image-segmentation/train_lora_sam.py
