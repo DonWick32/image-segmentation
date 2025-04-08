@@ -116,6 +116,16 @@ criterion = MultiStepMultiMasksAndIous(
         focal_alpha_obj_score=loss_cfg.focal_alpha_obj_score,
     )
 
+weight_dict['loss_iou'] = 0
+kd_criterion = MultiStepMultiMasksAndIous(
+        weight_dict=weight_dict,
+        supervise_all_iou=loss_cfg.supervise_all_iou,
+        iou_use_l1_loss=loss_cfg,
+        pred_obj_scores=loss_cfg.pred_obj_scores,
+        focal_gamma_obj_score=loss_cfg.focal_gamma_obj_score,
+        focal_alpha_obj_score=loss_cfg.focal_alpha_obj_score,
+    )
+
 model = get_model(config).train()
 _load_checkpoint(model, config.model.checkpoint)
 
@@ -160,12 +170,41 @@ def train():
             train_loader.sampler.set_epoch(epoch)
             val_loader.sampler.set_epoch(epoch)
                     
+            model.module.training = False
+            if (epoch == config.epochs - 1) or (epoch % config.cl_config.evaluate_every_n_epochs == 0):
+                for perf_list, type_ in zip([val_performance, train_performance], ['val', 'train']):
+                    print(f"Evaluating {type_} performance from current domain {domain}")
+                    perf_total = {}
+                    for domain_prev in DOMAINS[:domain_idx+1]:
+                        print(f"Evaluating prev domain: {domain_prev} performance")
+                        annot_file = "val" if type_ == "train" else "test"
+                        perf = run_eval(model.module, monitor_vids[type_], domain, os.path.join(config.dataset.annotation_path, f"{annot_file}.json"))
+                        perf_total[domain_prev] = perf
+                        for k, v in perf.items():
+                            logger.log({f"{type_}_perf/{domain_prev}/{k}": v})
+                        print(f"Performance of {domain_prev} domain: {perf}")
+                    insert_perf(perf_list, perf_total)
+                    calculate_forgetting(perf_list, domain_idx, config, tag=type_)
+                    
             torch.distributed.barrier()
             model.train()
             model.module.training = True
 
             for batch in tqdm(train_loader, desc=f"[Rank {rank}] Epoch {epoch+1}"):
                 batch = batch.to(device)
+                
+                if prev_domain is not None:
+                    with torch.no_grad():
+                        custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"curr_lora_{domain}.pth"))
+                        custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{prev_domain}.pth"))
+                        output_old = model(batch)
+                        output_old = torch.stack([output_old[i]['multistep_pred_masks_high_res'].squeeze() for i in range(len(output))], 0)
+                        
+                        gc.collect()
+                        torch.cuda.empty_cache()
+                        
+                        custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"curr_lora_{domain}.pth"))
+                
                 optimizer.zero_grad()
                 
                 output = model(batch)
@@ -173,32 +212,24 @@ def train():
                 gc.collect()
                 torch.cuda.empty_cache()
                 
-                if prev_domain is not None:
-                    with torch.no_grad():
-                        custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"curr_lora_{domain}.pth"))
-                        custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{prev_domain}.pth"))
-                        output_old = model(batch)
-                        
-                        rm_output_keys(output_old)
-                        gc.collect()
-                        torch.cuda.empty_cache()
-                        
-                
-                    
-                    
-                    
                 losses = criterion(output, batch.masks)
+                kd_loss = kd_criterion(output, output_old)
+                losses['kd_loss'] = kd_loss['core_loss']
+    
 
                 if is_main_process():
                     for k, v in losses.items():
                         logger.log({f"metric/train_loss_{k}": v.item(), "epoch": epoch + 1})
-                        print(k, v.item())
+                        
+                    for k, v in kd_loss.items():
+                        logger.log({f"metric/train_loss_kd_{k}": v.item(), "epoch": epoch + 1})
 
-                loss_key, core_loss = losses.popitem()
+                core_loss = losses['core_loss']
+                core_loss = config.loss_weights.knowledge_distillation * kd_loss + (1-config.loss_weights.knowledge_distillation) * core_loss
                 core_loss.backward()
                 optimizer.step()
 
-                del losses, batch, core_loss, output
+                del losses, batch, core_loss, output, kd_loss, output_old
                 torch.cuda.empty_cache()
                 gc.collect()
 
@@ -223,20 +254,6 @@ def train():
                 custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{domain}.pth"))
                 
                 model.module.training = False
-                if (epoch == config.epochs - 1) or (epoch % config.cl_config.evaluate_every_n_epochs == 0):
-                    for perf_list, type_ in zip([val_performance, train_performance], ['val', 'train']):
-                        print(f"Evaluating {type_} performance from current domain {domain}")
-                        perf_total = {}
-                        for domain_prev in DOMAINS[:domain_idx+1]:
-                            print(f"Evaluating prev domain: {domain_prev} performance")
-                            annot_file = "val" if type_ == "train" else "test"
-                            perf = run_eval(model.module, monitor_vids[type_], domain, os.path.join(config.dataset.annotation_path, f"{annot_file}.json"))
-                            perf_total[domain_prev] = perf
-                            for k, v in perf.items():
-                                logger.log({f"{type_}_perf/{domain_prev}/{k}": v})
-                            print(f"Performance of {domain_prev} domain: {perf}")
-                        insert_perf(perf_list, perf_total)
-                        calculate_forgetting(perf_list, domain_idx, config, tag=type_)
 
                 if epoch == config.epochs - 1:
                     print(f"Evaluating test performance from current domain {domain}")

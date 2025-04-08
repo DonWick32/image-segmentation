@@ -24,8 +24,9 @@ dataset:
 loss_weights:
   loss_mask: 20
   loss_dice: 1
-  loss_iou: 1
+  loss_iou: 1  ### for kd its set to 0, other losses are used tho
   loss_class: 1
+  knowledge_distillation: 0.1
 
 loss_config:
   supervise_all_iou: true
