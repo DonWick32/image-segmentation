@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --job-name=cl_sam2_ddp
-#SBATCH --nodes=4
+#SBATCH --nodes=3
 #SBATCH --gres=gpu:2
 #SBATCH --partition=gpu
 #SBATCH --output=/scratch/gokuladethya.cse.nitt/fyp/slurm-%j.out
@@ -49,7 +49,7 @@ export NCCL_IB_DISABLE=0
 export NCCL_NET_GDR_LEVEL=0
 
 srun torchrun \
-  --nnodes=4 \
+  --nnodes=3 \
   --nproc_per_node=2 \
   --rdzv_id=$RANDOM \
   --rdzv_backend=c10d \
