@@ -16,7 +16,7 @@ from lora_qkv import wrap_decoder_lora, wrap_image_encoder_lora, custom_save_lor
 from omegaconf import OmegaConf
 import gc
 from evaluate import run_eval
-from utils import logger
+from utils import Logger
 
 
 def seed_everything(seed=42):
@@ -62,6 +62,7 @@ device = torch.device(f"cuda:{local_rank}")
 config = OmegaConf.load("lora_sam_config.yaml")
 
 if is_main_process():
+    logger = Logger(config, wandb_log=True)
     wandb.init(
         project="CL-SAM2",
         config=OmegaConf.to_container(config),
