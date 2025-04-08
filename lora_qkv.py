@@ -194,62 +194,20 @@ def wrap_image_encoder_lora(sam_model, rank: int):
     # sam_model.register_module("A_weights_encoder", nn.ModuleList(A_weights))
     # sam_model.register_module("B_weights_encoder", nn.ModuleList(B_weights))
     
+
     
-def save_lora_parameters(sam_model, filename: str):
-    """
-    Save the LoRA wieghts applied to the attention model as safetensors.
-    Arguments:
-        filenmame: Name of the file that will be saved
-   
-    Return:
-        None: Saves a safetensors file
-    """
-    total_wts = {}
-    for lora_at in ["encoder", "decoder"]:
-        if f"A_weights_{lora_at}" in sam_model.__dict__:
-            A_weights = sam_model.__dict__[f"A_weights_{lora_at}"]
-            B_weights = sam_model.__dict__[f"B_weights_{lora_at}"]
-    
-            num_layer = len(A_weights)
-            # sufix 03:d -> allows to have a name 1 instead of 001
-            a_tensors = {f"{lora_at}_w_a_{i:03d}": A_weights[i].weight for i in range(num_layer)}
-            b_tensors = {f"{lora_at}_w_b_{i:03d}": B_weights[i].weight for i in range(num_layer)}
-            merged_dict = {**a_tensors, **b_tensors}
-            total_wts.update(merged_dict)
-            
-    save_file(total_wts, filename)
+def reset_lora_wts(sam_model):
+    for name, param in sam_model.named_parameters():
+        if 'A_q' in name or 'A_v' in name or 'B_q' in name or 'B_v' in name:
+            if param.requires_grad:
+                if len(param.shape) == 2:
+                    nn.init.kaiming_uniform_(param, a=np.sqrt(5))
+                else:
+                    nn.init.zeros_(param)
+                    
     
     
-def load_lora_parameters(sam_model:SAM2Base, filename: str):
-    """
-    Load a safetensor file of LoRA weights for the attention modules
-    Arguments:
-        filename: Name of the file containing the saved weights
-   
-    Return:
-        None: Loads the weights to the SAM2Lora class
-    """
-    
-    with safe_open(filename, framework="pt") as f:
-        lora_at = []
-        if "A_weights_encoder" in sam_model.__dict__:
-            lora_at.append("encoder")
-        if "A_weights_decoder" in sam_model.__dict__:
-            lora_at.append("decoder")
-            
-        for lora in lora_at:
-            A_weights = sam_model.__dict__[f"A_weights_{lora}"]
-            B_weights = sam_model.__dict__[f"B_weights_{lora}"]
-            for i, w_A_linear in enumerate(A_weights):
-                saved_key = f"{lora}_w_a_{i:03d}"
-                saved_tensor = f.get_tensor(saved_key)
-                w_A_linear.weight = nn.Parameter(saved_tensor)
-            for i, w_B_linear in enumerate(B_weights):
-                saved_key = f"{lora}_w_b_{i:03d}"
-                saved_tensor = f.get_tensor(saved_key)
-                w_B_linear.weight = nn.Parameter(saved_tensor)
-                
-                
+
 
 def custom_save_lora_parameters(model, save_path):
     state_dict = model.state_dict()

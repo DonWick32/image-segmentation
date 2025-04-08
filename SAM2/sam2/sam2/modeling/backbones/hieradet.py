@@ -280,6 +280,29 @@ class Hiera(nn.Module):
         pos_embed = pos_embed.permute(0, 2, 3, 1)
         return pos_embed
 
+    
+    def get_embedding(self, x: torch.Tensor):
+        with torch.no_grad():
+            x = self.patch_embed(x)
+            # x: (B, H, W, C)
+
+            # Add pos embed
+            x = x + self._get_pos_embed(x.shape[1:3])
+            
+        outputs = []
+        for i, blk in enumerate(self.blocks):
+            with torch.no_grad():
+                x = blk(x)
+                if (i == self.stage_ends[-1]) or (
+                    i in self.stage_ends and self.return_interm_layers
+                ):
+                    feats = x.permute(0, 3, 1, 2)
+                    outputs.append(feats)
+                    
+        return outputs
+
+
+
     def forward(self, x: torch.Tensor) -> List[torch.Tensor]:
         with torch.no_grad():
             x = self.patch_embed(x)

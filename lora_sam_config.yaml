@@ -1,4 +1,4 @@
-notes: "LoRA naive training sam-base"
+notes: "Single domain training"
 entity: "frozenwolf"
 device: cuda
 batch_size: 2
@@ -6,8 +6,8 @@ num_workers: 0
 learning_rate: 0.0001
 epochs: 100
 distributed: true
-evaluate_every_n_epochs: 4
-domain: "blood"
+evaluate_every_n_epochs: 2
+domain: "smoke"
 
 # output_dir: "output"
 output_dir: "/scratch/gokuladethya.cse.nitt/fyp/output"
