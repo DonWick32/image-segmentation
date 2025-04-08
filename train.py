@@ -16,7 +16,7 @@ from lora_qkv import wrap_decoder_lora, wrap_image_encoder_lora, custom_save_lor
 from omegaconf import OmegaConf
 import gc
 from evaluate import run_eval
-from utils import insert_perf, calculate_forgetting
+from utils import insert_perf, calculate_forgetting, logger
 
 
 def seed_everything(seed=42):
@@ -131,7 +131,7 @@ model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[local_rank]
 if is_main_process():
     trainable_param_count = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print("Trainable LoRA parameters:", trainable_param_count)
-    wandb.log({"trainable_lora_params": trainable_param_count})
+    logger(config,{"trainable_lora_params": trainable_param_count})
 
 trainable_params = [param for name, param in model.named_parameters() if param.requires_grad]
 optimizer = torch.optim.AdamW(trainable_params, lr=config.learning_rate)
@@ -167,7 +167,7 @@ def train():
 
                 if is_main_process():
                     for k, v in losses.items():
-                        wandb.log({f"metric/train_loss_{k}": v.item(), "epoch": epoch + 1})
+                        logger(config,{f"metric/train_loss_{k}": v.item(), "epoch": epoch + 1})
                         print(k, v.item())
 
                 loss_key, core_loss = losses.popitem()
@@ -187,7 +187,7 @@ def train():
 
                     if is_main_process():
                         for k, v in losses.items():
-                            wandb.log({f"metric/val_loss_{k}": v.item(), "epoch": epoch + 1})
+                            logger(config,{f"metric/val_loss_{k}": v.item(), "epoch": epoch + 1})
 
                     del losses, batch, output
                     torch.cuda.empty_cache()
@@ -208,10 +208,10 @@ def train():
                             perf = run_eval(model.module, monitor_vids[type_], domain, os.path.join(config.dataset.annotation_path, f"{annot_file}.json"))
                             perf_total[domain_prev] = perf
                             for k, v in perf.items():
-                                wandb.log({f"{type_}_perf/{domain_prev}/{k}": v})
+                                logger(config,{f"{type_}_perf/{domain_prev}/{k}": v})
                             print(f"Performance of {domain_prev} domain: {perf}")
                         insert_perf(perf_list, perf_total)
-                        calculate_forgetting(perf_list, domain_idx, tag=type_)
+                        calculate_forgetting(perf_list, domain_idx, config, tag=type_)
 
                 if epoch == config.epochs - 1:
                     print(f"Evaluating test performance from current domain {domain}")
@@ -223,10 +223,10 @@ def train():
                             perf = run_eval(model.module, vids, domain, os.path.join(config.dataset.annotation_path, "test.json"))
                             perf_total[domain_prev].append(perf)
                             for k, v in perf.items():
-                                wandb.log({f"test_perf/{domain_prev}/vid_{i}/{k}": v})
+                                logger(config,{f"test_perf/{domain_prev}/vid_{i}/{k}": v})
                             print(f"{vids} Performance of {domain_prev} domain: {perf}")
                     insert_perf(test_performance, perf_total)
-                    calculate_forgetting(test_performance, domain_idx)
+                    calculate_forgetting(test_performance, domain_idx, config)
 
 if __name__ == '__main__':
     seed_everything()

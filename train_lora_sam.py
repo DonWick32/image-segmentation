@@ -16,6 +16,7 @@ from lora_qkv import wrap_decoder_lora, wrap_image_encoder_lora, custom_save_lor
 from omegaconf import OmegaConf
 import gc
 from evaluate import run_eval
+from utils import logger
 
 
 def seed_everything(seed=42):
@@ -125,7 +126,7 @@ model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[local_rank]
 if is_main_process():
     trainable_param_count = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print("Trainable LoRA parameters:", trainable_param_count)
-    wandb.log({"trainable_lora_params": trainable_param_count})
+    logger(config,{"trainable_lora_params": trainable_param_count})
 
 trainable_params = [param for name, param in model.named_parameters() if param.requires_grad]
 optimizer = torch.optim.AdamW(trainable_params, lr=config.learning_rate)
@@ -162,8 +163,7 @@ def train():
 
                 if is_main_process():
                     for k, v in losses.items():
-                        wandb.log({f"metric/train_loss_{k}": v.item(), "epoch": epoch + 1})
-                        print(k, v.item())
+                        logger(config,{f"metric/train_loss_{k}": v.item(), "epoch": epoch + 1})
 
                 loss_key, core_loss = losses.popitem()
                 core_loss.backward()
@@ -182,7 +182,7 @@ def train():
 
                     if is_main_process():
                         for k, v in losses.items():
-                            wandb.log({f"metric/val_loss_{k}": v.item(), "epoch": epoch + 1})
+                            logger(config,{f"metric/val_loss_{k}": v.item(), "epoch": epoch + 1})
 
                     del losses, batch, output
                     torch.cuda.empty_cache()
@@ -194,7 +194,7 @@ def train():
                         print(f"Evaluating prev domain: {domain_prev} performance")
                         perf = run_eval(model.module, VAL_VIDS[0], 'regular', os.path.join(config.dataset.annotation_path, f"test.json"))
                         for k, v in perf.items():
-                            wandb.log({f"metrics/{domain_prev}/{k}": v})
+                            logger(config,{f"metrics/{domain_prev}/{k}": v})
                         print(f"Performance of {domain_prev} domain: {perf}")
                                 
                 torch.distributed.barrier()
