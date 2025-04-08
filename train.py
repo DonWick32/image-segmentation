@@ -189,7 +189,6 @@ def train():
                 if is_main_process():
                     for k, v in losses.items():
                         logger.log({f"metric/train_loss_{k}": v.item(), "epoch": epoch + 1})
-                        print(k, v.item())
 
                 loss_key, core_loss = losses.popitem()
                 core_loss.backward()
