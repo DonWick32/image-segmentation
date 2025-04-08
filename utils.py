@@ -60,7 +60,7 @@ def train_val_eval(val_performance, train_performance, model, domain_idx, config
             perf = run_eval(model.module, monitor_vids[type_], domain, os.path.join(config.dataset.annotation_path, f"{annot_file}.json"))
             perf_total[domain_prev] = perf
             for k, v in perf.items():
-                logger.log(config, {f"{type_}_perf/{domain_prev}/{k}": v})
+                logger.log( {f"{type_}_perf/{domain_prev}/{k}": v})
             print(f"Performance of {domain_prev} domain: {perf}")
         insert_perf(perf_list, perf_total)
         calculate_forgetting(perf_list, domain_idx, config, logger, tag=type_)
@@ -81,7 +81,7 @@ def calculate_forgetting(perf_dict, domain_idx, config, logger, tag="train"):
                     f_prev = perf_dict[domain][-1][idx][metric] - perf_dict[domain][-2][idx][metric]
                     avg_forgetting += f
                     avg_forgetting_prev += f_prev
-                    logger.log(config, {f"metric/{tag}_forgetting_{domain}_video_{idx}_{metric}": f})
+                    logger.log( {f"metric/{tag}_forgetting_{domain}_video_{idx}_{metric}": f})
                     print("Video", idx, "Metric", metric, "of domain", domain, ":", perf_dict[domain][-1][idx][metric])
                     print("Metric", metric, "of domain", domain, ":", perf_dict[domain][-1][idx][metric])
                     print("Forgetting of domain", domain, ":", f)
@@ -89,13 +89,13 @@ def calculate_forgetting(perf_dict, domain_idx, config, logger, tag="train"):
                 avg_forgetting_prev /= 3
                 print("Average forgetting:", avg_forgetting)
                 print("Average forgetting previous:", avg_forgetting_prev)
-                logger.log(config, {f"metric/test_avg_forgetting_{domain}_{metric}": avg_forgetting})
-                logger.log(config, {f"metric/test_avg_forgetting_prev_{domain}_{metric}": avg_forgetting_prev})
+                logger.log( {f"metric/test_avg_forgetting_{domain}_{metric}": avg_forgetting})
+                logger.log( {f"metric/test_avg_forgetting_prev_{domain}_{metric}": avg_forgetting_prev})
                 
         else:
             for metric in perf_dict[domain][-1].keys():
                 f = perf_dict[domain][-1][metric] - perf_dict[domain][0][metric]
                 f_prev = perf_dict[domain][-1][metric] - perf_dict[domain][-2][metric]
-                logger.log(config, {f"metric/{tag}_forgetting_{domain}_{metric}": f})
+                logger.log( {f"metric/{tag}_forgetting_{domain}_{metric}": f})
                 print("Metric", metric, "of domain", domain, ":", perf_dict[domain][-1][metric])
                 print("Forgetting of domain", domain, ":", f)
