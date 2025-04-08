@@ -154,7 +154,7 @@ def train():
         for epoch in range(0, config.epochs):
             train_loader.sampler.set_epoch(epoch)
             val_loader.sampler.set_epoch(epoch)
-            model.training = False
+            model.module.training = False
             if epoch%config.evaluate_every_n_epochs == 0:
                 if is_main_process():
                     for domain_prev in DOMAINS:
