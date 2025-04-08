@@ -16,7 +16,7 @@ from lora_qkv import wrap_decoder_lora, wrap_image_encoder_lora, custom_save_lor
 from omegaconf import OmegaConf
 import gc
 from evaluate import run_eval
-from utils import logger
+from utils import Logger
 
 
 def seed_everything(seed=42):
@@ -62,6 +62,7 @@ device = torch.device(f"cuda:{local_rank}")
 config = OmegaConf.load("lora_sam_config.yaml")
 
 if is_main_process():
+    logger = Logger(config, wandb_log=True)
     wandb.init(
         project="CL-SAM2",
         config=OmegaConf.to_container(config),
@@ -128,7 +129,7 @@ model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[local_rank]
 if is_main_process():
     trainable_param_count = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print("Trainable LoRA parameters:", trainable_param_count)
-    logger(config,{"trainable_lora_params": trainable_param_count})
+    logger.log(config,{"trainable_lora_params": trainable_param_count}, epoch_end_log=False)
 
 trainable_params = [param for name, param in model.named_parameters() if param.requires_grad]
 optimizer = torch.optim.AdamW(trainable_params, lr=config.learning_rate)
@@ -165,7 +166,7 @@ def train():
 
                 if is_main_process():
                     for k, v in losses.items():
-                        logger(config,{f"metric/train_loss_{k}": v.item(), "epoch": epoch + 1})
+                        logger.log(config,{f"metric/train_loss_{k}": v.item(), "epoch": epoch + 1})
 
                 loss_key, core_loss = losses.popitem()
                 core_loss.backward()
@@ -184,7 +185,7 @@ def train():
 
                     if is_main_process():
                         for k, v in losses.items():
-                            logger(config,{f"metric/val_loss_{k}": v.item(), "epoch": epoch + 1})
+                            logger.log(config,{f"metric/val_loss_{k}": v.item(), "epoch": epoch + 1})
 
                     del losses, batch, output
                     torch.cuda.empty_cache()
@@ -194,9 +195,9 @@ def train():
                 if is_main_process():
                     for domain_prev in DOMAINS:
                         print(f"Evaluating prev domain: {domain_prev} performance")
-                        perf = run_eval(model.module, VAL_VIDS[0], 'regular', os.path.join(config.dataset.annotation_path, f"test.json"))
+                        perf = run_eval(model.module, VAL_VIDS[0], domain_prev, os.path.join(config.dataset.annotation_path, f"test.json"))
                         for k, v in perf.items():
-                            logger(config,{f"metrics/{domain_prev}/{k}": v})
+                            logger.log(config,{f"metric/{domain_prev}/{k}": v})
                         print(f"Performance of {domain_prev} domain: {perf}")
                                 
                 torch.distributed.barrier()
@@ -205,6 +206,9 @@ def train():
             torch.distributed.barrier()
             if is_main_process():
                 custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora.pth"))
+                
+
+            logger.log_epoch_average()
 
 if __name__ == '__main__':
     seed_everything()

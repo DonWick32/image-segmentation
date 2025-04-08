@@ -133,7 +133,7 @@ model = torch.nn.parallel.DistributedDataParallel(model, device_ids=[local_rank]
 if is_main_process():
     trainable_param_count = sum(p.numel() for p in model.parameters() if p.requires_grad)
     print("Trainable LoRA parameters:", trainable_param_count)
-    logger(config,{"trainable_lora_params": trainable_param_count})
+    logger.log(config,{"trainable_lora_params": trainable_param_count}, epoch_end_log=False)
 
 trainable_params = [param for name, param in model.named_parameters() if param.requires_grad]
 optimizer = torch.optim.AdamW(trainable_params, lr=config.learning_rate)
@@ -169,7 +169,7 @@ def train():
 
                 if is_main_process():
                     for k, v in losses.items():
-                        logger(config,{f"metric/train_loss_{k}": v.item(), "epoch": epoch + 1})
+                        logger.log(config,{f"metric/train_loss_{k}": v.item(), "epoch": epoch + 1})
                         print(k, v.item())
 
                 loss_key, core_loss = losses.popitem()
@@ -189,7 +189,7 @@ def train():
 
                     if is_main_process():
                         for k, v in losses.items():
-                            logger(config,{f"metric/val_loss_{k}": v.item(), "epoch": epoch + 1})
+                            logger.log(config,{f"metric/val_loss_{k}": v.item(), "epoch": epoch + 1})
 
                     del losses, batch, output
                     torch.cuda.empty_cache()
@@ -210,7 +210,7 @@ def train():
                             perf = run_eval(model.module, monitor_vids[type_], domain, os.path.join(config.dataset.annotation_path, f"{annot_file}.json"))
                             perf_total[domain_prev] = perf
                             for k, v in perf.items():
-                                logger(config,{f"{type_}_perf/{domain_prev}/{k}": v})
+                                logger.log(config,{f"{type_}_perf/{domain_prev}/{k}": v})
                             print(f"Performance of {domain_prev} domain: {perf}")
                         insert_perf(perf_list, perf_total)
                         calculate_forgetting(perf_list, domain_idx, config, tag=type_)
@@ -225,10 +225,14 @@ def train():
                             perf = run_eval(model.module, vids, domain, os.path.join(config.dataset.annotation_path, "test.json"))
                             perf_total[domain_prev].append(perf)
                             for k, v in perf.items():
-                                logger(config,{f"test_perf/{domain_prev}/vid_{i}/{k}": v})
+                                logger.log(config,{f"test_perf/{domain_prev}/vid_{i}/{k}": v})
                             print(f"{vids} Performance of {domain_prev} domain: {perf}")
                     insert_perf(test_performance, perf_total)
                     calculate_forgetting(test_performance, domain_idx, config)
+                    
+                    
+                logger.log_epoch_average()
+                    
 
 if __name__ == '__main__':
     seed_everything()
