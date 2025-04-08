@@ -40,7 +40,7 @@ srun nvidia-smi
 echo "Launching torchrun..."
 ls /scratch/gokuladethya.cse.nitt/image-segmentation/
 
-export TORCH_RUN_RDZV_TIMEOUT=3600
+export TORCH_RUN_RDZV_TIMEOUT=36000
 export TORCH_DISTRIBUTED_DEBUG=INFO
 srun torchrun \
   --nnodes=3 \

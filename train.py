@@ -170,7 +170,7 @@ def train():
                                 logger.log({f"{type_}_perf/{domain_prev}/{k}": v})
                             print(f"Performance of {domain_prev} domain: {perf}")
                         insert_perf(perf_list, perf_total)
-                        calculate_forgetting(perf_list, domain_idx, config, tag=type_)
+                        calculate_forgetting(perf_list, domain_idx, config, logger, tag=type_)
 
             train_loader.sampler.set_epoch(epoch)
             val_loader.sampler.set_epoch(epoch)
@@ -231,7 +231,7 @@ def train():
                                 logger.log({f"test_perf/{domain_prev}/vid_{i}/{k}": v})
                             print(f"{vids} Performance of {domain_prev} domain: {perf}")
                     insert_perf(test_performance, perf_total)
-                    calculate_forgetting(test_performance, domain_idx, config)
+                    calculate_forgetting(test_performance, domain_idx, config, logger)
                     
                     
                 logger.log_epoch_average()
