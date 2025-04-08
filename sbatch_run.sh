@@ -42,8 +42,9 @@ ls /scratch/gokuladethya.cse.nitt/image-segmentation/
 
 export TORCH_RUN_RDZV_TIMEOUT=360000
 export TORCH_DISTRIBUTED_DEBUG=INFO
+export TORCHELASTIC_ENABLE_FILE_TIMER=1
 export NCCL_DEBUG=INFO
-export NCCL_DEBUG_SUBSYS=ALL
+# export NCCL_DEBUG_SUBSYS=ALL
 export NCCL_IB_DISABLE=0
 export NCCL_NET_GDR_LEVEL=0
 
