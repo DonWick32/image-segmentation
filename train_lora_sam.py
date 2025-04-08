@@ -116,8 +116,10 @@ _load_checkpoint(model, config.model.checkpoint)
 for param in model.parameters():
     param.requires_grad = False
 
-wrap_decoder_lora(model, 8)
-wrap_image_encoder_lora(model, 8)
+if config.lora.decoder:
+    wrap_decoder_lora(model, config.lora.rank)
+if config.lora.image_encoder:
+    wrap_image_encoder_lora(model, config.lora.rank)
 
 model.to(device)
 model = torch.nn.SyncBatchNorm.convert_sync_batchnorm(model)

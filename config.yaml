@@ -17,7 +17,7 @@ model:
 dataset:
   # path: "../segstrong"
   path: "../"
-  max_frames: 3 # nbatches = 300/(max_frames//2)
+  max_frames: 4 # nbatches = 300/(max_frames//2)
   max_frame_interval_skip: 3
   annotation_path:  "annotations/auto/"
 
@@ -36,3 +36,8 @@ loss_config:
 
 cl_config:
   evaluate_every_n_epochs: 10
+
+lora:
+  decoder: false
+  image_encoder: true
+  rank: 8

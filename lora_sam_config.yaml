@@ -1,12 +1,13 @@
 notes: "LoRA naive training sam-base"
 entity: "frozenwolf"
 device: cuda
-batch_size: 1
+batch_size: 2
 num_workers: 0
 learning_rate: 0.0001
 epochs: 100
 distributed: true
-evaluate_every_n_epochs: 5
+evaluate_every_n_epochs: 4
+domain: "blood"
 
 # output_dir: "output"
 output_dir: "/scratch/gokuladethya.cse.nitt/fyp/output"
@@ -18,7 +19,7 @@ model:
 dataset:
   # path: "../segstrong"
   path: "../"
-  max_frames: 9 # nbatches = 300/(max_frames//2)
+  max_frames: 4 # nbatches = 300/(max_frames//2)
   max_frame_interval_skip: 3
   annotation_path:  "annotations/auto/"
 
@@ -34,3 +35,8 @@ loss_config:
   pred_obj_scores: true
   focal_gamma_obj_score: 0.0
   focal_alpha_obj_score: -1.0
+
+lora:
+  decoder: false
+  image_encoder: true
+  rank: 8
