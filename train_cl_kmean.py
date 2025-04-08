@@ -18,6 +18,7 @@ import gc
 from evaluate import run_eval
 from utils import calculate_forgetting, insert_perf, rm_output_keys, Logger
 
+from torch.distributed.elastic.multiprocessing.errors import record
 
 def seed_everything(seed=42):
     import random
@@ -156,6 +157,7 @@ log_metrics_history = {}
 
 
 prev_domain = None
+@record
 def train():
     for domain_idx, domain in enumerate(DOMAINS):
         torch.distributed.barrier()
@@ -280,5 +282,9 @@ def train():
 
 if __name__ == '__main__':
     seed_everything()
-    train()
+    try:
+        train(...)
+    except Exception as e:
+        print(f"Rank {dist.get_rank()} failed: {e}")
+
     cleanup_distributed()
