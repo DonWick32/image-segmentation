@@ -1,11 +1,11 @@
-notes: "LoRA naive training sam-base"
+notes: "LoRA naive CL baseline"
 entity: "frozenwolf"
 device: cuda
 batch_size: 2
 num_workers: 0
 learning_rate: 0.0001
-epochs: 4
-distributed: false
+epochs: 10
+distributed: true
 
 # output_dir: "output"
 output_dir: "/scratch/gokuladethya.cse.nitt/fyp/output"
