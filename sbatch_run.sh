@@ -48,4 +48,4 @@ srun torchrun \
   --rdzv_id=$RANDOM \
   --rdzv_backend=c10d \
   --rdzv_endpoint=$head_node_ip:29500 \
-  /scratch/gokuladethya.cse.nitt/image-segmentation/train.py
+  /scratch/gokuladethya.cse.nitt/image-segmentation/train_cl.py
