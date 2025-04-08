@@ -228,7 +228,7 @@ def train():
                         logger.log({f"metric/train_loss_kd_{k}": v.item(), "epoch": epoch + 1})
 
                 core_loss = losses['core_loss']
-                core_loss = config.loss_weights.knowledge_distillation * kd_loss + (1-config.loss_weights.knowledge_distillation) * core_loss
+                core_loss = config.cl_config.knowledge_distillation * kd_loss + (1-config.cl_config.knowledge_distillation) * core_loss
                 core_loss.backward()
                 optimizer.step()
 
