@@ -45,8 +45,8 @@ export TORCH_DISTRIBUTED_DEBUG=INFO
 export TORCHELASTIC_ENABLE_FILE_TIMER=1
 export NCCL_DEBUG=INFO
 # export NCCL_DEBUG_SUBSYS=ALL
-export NCCL_IB_DISABLE=0
-export NCCL_NET_GDR_LEVEL=0
+# export NCCL_IB_DISABLE=0
+# export NCCL_NET_GDR_LEVEL=0
 
 srun torchrun \
   --nnodes=3 \
@@ -54,4 +54,4 @@ srun torchrun \
   --rdzv_id=$RANDOM \
   --rdzv_backend=c10d \
   --rdzv_endpoint=$head_node_ip:29500 \
-  /scratch/gokuladethya.cse.nitt/image-segmentation/train_single_domain.py
+  /scratch/gokuladethya.cse.nitt/image-segmentation/train_cl.py
