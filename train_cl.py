@@ -156,10 +156,11 @@ test_performance = {i:[] for i in DOMAINS}
 log_metrics_history = {}
 
 
-prev_domain = None
 
 @record
 def train():
+    prev_domain = None
+
     for domain_idx, domain in enumerate(DOMAINS):
         torch.distributed.barrier()
         if is_main_process():
@@ -195,7 +196,7 @@ def train():
 
             for batch in tqdm(train_loader, desc=f"[Rank {rank}] Epoch {epoch+1}"):
                 batch = batch.to(device)
-                
+                output_old = None
                 if prev_domain is not None:
                     with torch.no_grad():
                         custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"curr_lora_{domain}.pth"))
@@ -216,8 +217,10 @@ def train():
                 torch.cuda.empty_cache()
                 
                 losses = criterion(output, batch.masks)
-                kd_loss = kd_criterion(output, output_old)
-                losses['kd_loss'] = kd_loss['core_loss']
+                kd_loss = {}
+                if prev_domain is not None:
+                    kd_loss = kd_criterion(output, output_old)
+                    losses['kd_loss'] = kd_loss['core_loss']
     
 
                 if is_main_process():
@@ -228,7 +231,8 @@ def train():
                         logger.log({f"metric/train_loss_kd_{k}": v.item(), "epoch": epoch + 1})
 
                 core_loss = losses['core_loss']
-                core_loss = config.cl_config.knowledge_distillation * kd_loss + (1-config.cl_config.knowledge_distillation) * core_loss
+                if prev_domain is not None:
+                    core_loss = config.cl_config.knowledge_distillation * kd_loss + (1-config.cl_config.knowledge_distillation) * core_loss
                 core_loss.backward()
                 optimizer.step()
 
