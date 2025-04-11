@@ -177,6 +177,8 @@ def set_closest_lora(model, vid, domain, domain_idx):
     vid = os.path.join(vid, domain)
     vid_l = os.path.join(vid, "left")
     vid_r = os.path.join(vid, "right")
+    print(vid_l, vid_r)
+    print(test_avg[domain].keys())
     if 'test' in vid:
         vid_embed = (test_avg[domain][vid_l] + test_avg[domain][vid_r]) / 2
     else:
@@ -185,11 +187,11 @@ def set_closest_lora(model, vid, domain, domain_idx):
     embed_dist = []
     for i in range(len(embed)):
         embed_dist.append((embed[i]-vid_embed).norm().item())
-
+    print(embed_dist)
     closest_domain = curr_availble_domains[embed_dist.index(min(embed_dist))]
 
     custom_load_lora_parameters(model, os.path.join(config.output_dir, run_id, f"lora_{closest_domain}.pth"))
-
+    print(f"Loading {closest_domain} lora weights for {domain} domain")
 @record
 def train():
     prev_domain = None
