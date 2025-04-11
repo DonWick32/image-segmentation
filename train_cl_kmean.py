@@ -195,8 +195,9 @@ def set_closest_lora(model, vid, domain, domain_idx):
 @record
 def train():
     prev_domain = None
-    if config.cl_kmean.reset_lora:
-        custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"default_lora.pth"))
+    if is_main_process():
+        if config.cl_kmean.reset_lora:
+            custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"default_lora.pth"))
 
     for domain_idx, domain in enumerate(DOMAINS):
         torch.distributed.barrier()
@@ -206,8 +207,9 @@ def train():
         train_loader, val_loader = get_dataloader(domain, config)
 
         # Wrap with DistributedSampler
-        if config.cl_kmean.reset_lora:
-            custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"default_lora.pth"))
+        if is_main_process():
+            if config.cl_kmean.reset_lora:
+                custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"default_lora.pth"))
             
         for epoch in range(0, config.epochs):
             train_loader.sampler.set_epoch(epoch)
