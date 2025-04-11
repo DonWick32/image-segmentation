@@ -173,6 +173,7 @@ train_anchor = torch.load("train_anchor.ptt", map_location='cpu')
 def set_closest_lora(model, vid, domain, domain_idx):
     curr_availble_domains = DOMAINS[:domain_idx+1]
     embed = [train_anchor[i] for i in curr_availble_domains]
+    vid = vid.replace("../","../segstrong/")
     vid = os.path.join(vid, domain)
     vid_l = os.path.join(vid, "left")
     vid_r = os.path.join(vid, "right")
