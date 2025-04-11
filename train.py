@@ -61,7 +61,7 @@ device = torch.device(f"cuda:{local_rank}")
 DOMAINS = ['regular', 'blood', 'bg_change', 'smoke', 'low_brightness']
 
 config = OmegaConf.load("config.yaml")
-
+config.notes = "CL-baseline-naive"
 if is_main_process():
     logger = Logger(config, wandb_log=True)
     wandb.init(
