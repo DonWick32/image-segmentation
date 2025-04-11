@@ -177,8 +177,6 @@ def set_closest_lora(model, vid, domain, domain_idx):
     vid = os.path.join(vid, domain)
     vid_l = os.path.join(vid, "left")
     vid_r = os.path.join(vid, "right")
-    print(vid_l, vid_r)
-    print(test_avg[domain].keys())
     if 'test' in vid:
         vid_embed = (test_avg[domain][vid_l] + test_avg[domain][vid_r]) / 2
     else:
@@ -218,7 +216,7 @@ def train():
             model.module.training = False
             if is_main_process():
                 if (epoch == config.epochs - 1) or (epoch % config.cl_config.evaluate_every_n_epochs == 0):
-                    custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"curr_lora_{domain}.pth"))
+                    custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{domain}.pth"))
                     for perf_list, type_ in zip([val_performance, train_performance], ['val', 'train']):
                         print(f"Evaluating {type_} performance from current domain {domain}")
                         perf_total = {}
@@ -234,7 +232,7 @@ def train():
                         insert_perf(perf_list, perf_total)
                         calculate_forgetting(perf_list, domain_idx, config, logger, tag=type_)
                         
-                    custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"curr_lora_{domain}.pth"))
+                    custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{domain}.pth"))
 
 
             global_rank, local_rank, node_rank, world_size = get_info()
@@ -247,7 +245,7 @@ def train():
                 output_old = None
                 if (prev_domain is not None) and (config.cl_kmean.knowledge_distillation):
                     with torch.no_grad():
-                        custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"curr_lora_{domain}.pth"))
+                        custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{domain}.pth"))
                         custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{prev_domain}.pth"))
                         output_old = model(batch)
                         output_old = torch.stack([output_old[i]['multistep_pred_masks_high_res'].squeeze() for i in range(len(output))], 0)
@@ -255,7 +253,7 @@ def train():
                         gc.collect()
                         torch.cuda.empty_cache()
                         
-                        custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"curr_lora_{domain}.pth"))
+                        custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{domain}.pth"))
                 
                 optimizer.zero_grad()
                 output = model(batch)
