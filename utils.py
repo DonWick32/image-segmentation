@@ -2,17 +2,25 @@ import os
 import wandb
 from evaluate import run_eval
 import traceback
+import copy
 
 class Logger:
     def __init__(self, config, wandb_log=True):
         self.config = config
         self.wandb_log = wandb_log
         self.epoch_logs = {}
+        self.epoch = 0
 
     def log(self, log_dict, epoch_end_log=True):
+        if 'epoch' in log_dict:
+            self.epoch = log_dict['epoch']
+            
         if self.wandb_log:
             try:
-                wandb.log(log_dict)
+                log_dict_ = copy.deepcopy(log_dict)
+                if 'epoch' not in log_dict:
+                    log_dict_['epoch'] = self.epoch
+                wandb.log(log_dict_)
             except Exception as e:
                 print(f"Error logging to wandb: {e}")
                 print("Logging to wandb failed!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
