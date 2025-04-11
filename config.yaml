@@ -1,4 +1,4 @@
-notes: "LoRA naive CL baseline"
+notes: "LoRA regularization CL baseline"
 entity: "frozenwolf"
 device: cuda
 batch_size: 2
