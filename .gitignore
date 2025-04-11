@@ -4,3 +4,4 @@ checkpoints
 *.tar
 __pycache__
 wandb
+output
