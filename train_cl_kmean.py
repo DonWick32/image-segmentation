@@ -45,6 +45,17 @@ def setup_distributed():
 
     print(f"Node Rank: {node_rank}, Global Rank: {global_rank}, Local Rank (GPU): {local_rank}, World Size: {world_size}")
 
+def get_info():
+    # Global rank (unique ID for each process)
+    node_rank = int(os.environ.get("NODE_RANK", 0))  # Default to 0 if not set
+    global_rank = dist.get_rank()
+
+    # Local rank (which GPU within a node)
+    local_rank = int(os.environ.get("LOCAL_RANK", 0))  # This is set by torchrun
+
+    # World size (total number of processes across all nodes)
+    world_size = dist.get_world_size()
+    return global_rank, local_rank, node_rank, world_size
 
 def cleanup_distributed():
     dist.destroy_process_group()
@@ -155,10 +166,35 @@ train_performance = {i:[] for i in DOMAINS}
 test_performance = {i:[] for i in DOMAINS}
 log_metrics_history = {}
 
+train_avg = torch.load("train_avg.ptt", map_location='cpu')
+test_avg = torch.load("test_avg.ptt", map_location='cpu')
+train_anchor = torch.load("train_anchor.ptt", map_location='cpu')
 
-prev_domain = None
+def set_closest_lora(model, vid, domain, domain_idx):
+    curr_availble_domains = DOMAINS[:domain_idx+1]
+    embed = [train_anchor[i] for i in curr_availble_domains]
+    vid = os.path.join(vid, domain)
+    vid_l = os.path.join(vid, "left")
+    vid_r = os.path.join(vid, "right")
+    if 'test' in vid:
+        vid_embed = (test_avg[domain][vid_l] + test_avg[domain][vid_r]) / 2
+    else:
+        vid_embed = (train_avg[domain][vid_l] + train_avg[domain][vid_r]) / 2
+        
+    embed_dist = []
+    for i in range(len(embed)):
+        embed_dist.append((embed[i]-vid_embed).norm().item())
+
+    closest_domain = curr_availble_domains[embed_dist.index(min(embed_dist))]
+
+    custom_load_lora_parameters(model, os.path.join(config.output_dir, run_id, f"lora_{closest_domain}.pth"))
+
 @record
 def train():
+    prev_domain = None
+    if config.cl_kmean.reset_lora:
+        custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"default_lora.pth"))
+
     for domain_idx, domain in enumerate(DOMAINS):
         torch.distributed.barrier()
         if is_main_process():
@@ -167,35 +203,44 @@ def train():
         train_loader, val_loader = get_dataloader(domain, config)
 
         # Wrap with DistributedSampler
-
+        if config.cl_kmean.reset_lora:
+            custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"default_lora.pth"))
+            
         for epoch in range(0, config.epochs):
             train_loader.sampler.set_epoch(epoch)
             val_loader.sampler.set_epoch(epoch)
                     
             model.module.training = False
-            if (epoch == config.epochs - 1) or (epoch % config.cl_config.evaluate_every_n_epochs == 0):
-                for perf_list, type_ in zip([val_performance, train_performance], ['val', 'train']):
-                    print(f"Evaluating {type_} performance from current domain {domain}")
-                    perf_total = {}
-                    for domain_prev in DOMAINS[:domain_idx+1]:
-                        print(f"Evaluating prev domain: {domain_prev} performance")
-                        annot_file = "val" if type_ == "train" else "test"
-                        perf = run_eval(model.module, monitor_vids[type_], domain, os.path.join(config.dataset.annotation_path, f"{annot_file}.json"))
-                        perf_total[domain_prev] = perf
-                        for k, v in perf.items():
-                            logger.log({f"{type_}_perf/{domain_prev}/{k}": v})
-                        print(f"Performance of {domain_prev} domain: {perf}")
-                    insert_perf(perf_list, perf_total)
-                    calculate_forgetting(perf_list, domain_idx, config, logger, tag=type_)
-                    
+            if is_main_process():
+                if (epoch == config.epochs - 1) or (epoch % config.cl_config.evaluate_every_n_epochs == 0):
+                    custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"curr_lora_{domain}.pth"))
+                    for perf_list, type_ in zip([val_performance, train_performance], ['val', 'train']):
+                        print(f"Evaluating {type_} performance from current domain {domain}")
+                        perf_total = {}
+                        for domain_prev in DOMAINS[:domain_idx+1]:
+                            print(f"Evaluating prev domain: {domain_prev} performance")
+                            annot_file = "val" if type_ == "train" else "test"
+                            set_closest_lora(model.module, monitor_vids[type_], domain_prev, domain_idx)
+                            perf = run_eval(model.module, monitor_vids[type_], domain_prev, os.path.join(config.dataset.annotation_path, f"{annot_file}.json"))
+                            perf_total[domain_prev] = perf
+                            for k, v in perf.items():
+                                logger.log({f"{type_}_perf/{domain_prev}/{k}": v})
+                            print(f"Performance of {domain_prev} domain: {perf}")
+                        insert_perf(perf_list, perf_total)
+                        calculate_forgetting(perf_list, domain_idx, config, logger, tag=type_)
+                        
+                    custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"curr_lora_{domain}.pth"))
+
+
+            global_rank, local_rank, node_rank, world_size = get_info()
             torch.distributed.barrier()
             model.train()
             model.module.training = True
 
             for batch in tqdm(train_loader, desc=f"[Rank {rank}] Epoch {epoch+1}"):
                 batch = batch.to(device)
-                
-                if prev_domain is not None:
+                output_old = None
+                if (prev_domain is not None) and (config.cl_kmean.knowledge_distillation):
                     with torch.no_grad():
                         custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"curr_lora_{domain}.pth"))
                         custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{prev_domain}.pth"))
@@ -208,15 +253,15 @@ def train():
                         custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"curr_lora_{domain}.pth"))
                 
                 optimizer.zero_grad()
-                
                 output = model(batch)
                 rm_output_keys(output)
                 gc.collect()
                 torch.cuda.empty_cache()
-                
                 losses = criterion(output, batch.masks)
-                kd_loss = kd_criterion(output, output_old)
-                losses['kd_loss'] = kd_loss['core_loss']
+                kd_loss = {}
+                if (prev_domain is not None) and (config.cl_kmean.knowledge_distillation):
+                    kd_loss = kd_criterion(output, output_old)
+                    losses['kd_loss'] = kd_loss['core_loss']
     
 
                 if is_main_process():
@@ -227,7 +272,9 @@ def train():
                         logger.log({f"metric/train_loss_kd_{k}": v.item(), "epoch": epoch + 1})
 
                 core_loss = losses['core_loss']
-                core_loss = config.loss_weights.knowledge_distillation * kd_loss + (1-config.loss_weights.knowledge_distillation) * core_loss
+                if (prev_domain is not None) and (config.cl_kmean.knowledge_distillation):
+                    core_loss = config.cl_config.knowledge_distillation * kd_loss + (1-config.cl_config.knowledge_distillation) * core_loss
+                    
                 core_loss.backward()
                 optimizer.step()
 
@@ -245,7 +292,6 @@ def train():
                     if is_main_process():
                         for k, v in losses.items():
                             logger.log({f"metric/val_loss_{k}": v.item(), "epoch": epoch + 1})
-                            print(k, v.item())
 
                     del losses, batch, output
                     torch.cuda.empty_cache()
@@ -264,13 +310,16 @@ def train():
                         print(f"Evaluating prev domain: {domain_prev} performance")
                         perf_total[domain_prev] = []
                         for i, vids in enumerate(TEST_VIDS):
-                            perf = run_eval(model.module, vids, domain, os.path.join(config.dataset.annotation_path, "test.json"))
+                            set_closest_lora(model.module, vids, domain_prev, domain_idx)
+                            perf = run_eval(model.module, vids, domain_prev, os.path.join(config.dataset.annotation_path, "test.json"))
                             perf_total[domain_prev].append(perf)
                             for k, v in perf.items():
                                 logger.log({f"test_perf/{domain_prev}/vid_{i}/{k}": v})
                             print(f"{vids} Performance of {domain_prev} domain: {perf}")
                     insert_perf(test_performance, perf_total)
                     calculate_forgetting(test_performance, domain_idx, config, logger)
+                    
+                custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{domain}.pth"))
                     
                 logger.log_epoch_average()
                     

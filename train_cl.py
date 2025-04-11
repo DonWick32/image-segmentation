@@ -194,7 +194,7 @@ def train():
                         for domain_prev in DOMAINS[:domain_idx+1]:
                             print(f"Evaluating prev domain: {domain_prev} performance")
                             annot_file = "val" if type_ == "train" else "test"
-                            perf = run_eval(model.module, monitor_vids[type_], domain, os.path.join(config.dataset.annotation_path, f"{annot_file}.json"))
+                            perf = run_eval(model.module, monitor_vids[type_], domain_prev, os.path.join(config.dataset.annotation_path, f"{annot_file}.json"))
                             perf_total[domain_prev] = perf
                             for k, v in perf.items():
                                 logger.log({f"{type_}_perf/{domain_prev}/{k}": v})
@@ -263,7 +263,6 @@ def train():
                     if is_main_process():
                         for k, v in losses.items():
                             logger.log({f"metric/val_loss_{k}": v.item(), "epoch": epoch + 1})
-                            print(k, v.item())
 
                     del losses, batch, output
                     torch.cuda.empty_cache()
@@ -282,7 +281,7 @@ def train():
                         print(f"Evaluating prev domain: {domain_prev} performance")
                         perf_total[domain_prev] = []
                         for i, vids in enumerate(TEST_VIDS):
-                            perf = run_eval(model.module, vids, domain, os.path.join(config.dataset.annotation_path, "test.json"))
+                            perf = run_eval(model.module, vids, domain_prev, os.path.join(config.dataset.annotation_path, "test.json"))
                             perf_total[domain_prev].append(perf)
                             for k, v in perf.items():
                                 logger.log({f"test_perf/{domain_prev}/vid_{i}/{k}": v})

@@ -38,6 +38,10 @@ cl_config:
   evaluate_every_n_epochs: 10
   knowledge_distillation: 0.1
 
+cl_kmean:
+  reset_lora: true
+  knowledge_distillation: false
+
 lora:
   decoder: false
   image_encoder: true
