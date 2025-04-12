@@ -89,7 +89,7 @@ def calculate_forgetting(perf_dict, domain_idx, config, logger, tag="train"):
                     f_prev = perf_dict[domain][-1][idx][metric] - perf_dict[domain][-2][idx][metric]
                     avg_forgetting += f
                     avg_forgetting_prev += f_prev
-                    logger.log( {f"metric/{tag}_forgetting_{domain}_video_{idx}_{metric}": f})
+                    logger.log( {f"metric/test_forgetting_{domain}_video_{idx}_{metric}": f})
                     print("Video", idx, "Metric", metric, "of domain", domain, ":", perf_dict[domain][-1][idx][metric])
                     print("Metric", metric, "of domain", domain, ":", perf_dict[domain][-1][idx][metric])
                     print("Forgetting of domain", domain, ":", f)
@@ -107,3 +107,49 @@ def calculate_forgetting(perf_dict, domain_idx, config, logger, tag="train"):
                 logger.log( {f"metric/{tag}_forgetting_{domain}_{metric}": f})
                 print("Metric", metric, "of domain", domain, ":", perf_dict[domain][-1][metric])
                 print("Forgetting of domain", domain, ":", f)
+                
+                
+import argparse
+from omegaconf import OmegaConf
+import sys
+
+def override_config_with_args(cfg):
+    parser = argparse.ArgumentParser()
+
+    def register_args(prefix, node):
+        for key, value in node.items():
+            full_key = f"{prefix}.{key}" if prefix else key
+            if isinstance(value, (int, float, bool, str)):
+                arg_type = type(value)
+                if isinstance(value, bool):
+                    # Special handling for booleans
+                    parser.add_argument(f"--{full_key}", type=str,
+                        choices=["true", "false"], help=f"(bool) override for {full_key}")
+                else:
+                    parser.add_argument(f"--{full_key}", type=arg_type, help=f"override for {full_key}")
+            elif isinstance(value, dict) or OmegaConf.is_dict(value):
+                register_args(full_key, value)
+
+    register_args("", cfg)
+
+    args, unknown = parser.parse_known_args()
+    args_dict = vars(args)
+
+    # Apply overrides
+    for full_key, val in args_dict.items():
+        print(f"Key: {full_key}, Value: {val}")
+        if val is None:
+            continue
+        parts = full_key.split(".")
+        sub_cfg = cfg
+        for p in parts[:-1]:
+            sub_cfg = sub_cfg[p]
+        last_key = parts[-1]
+        original_type = type(sub_cfg[last_key])
+        if original_type == bool:
+            val = val.lower() == "true"
+        else:
+            val = original_type(val)
+        sub_cfg[last_key] = val
+
+    return cfg

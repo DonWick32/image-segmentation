@@ -16,6 +16,7 @@ import cv2
 import torch
 from torch.utils.data import DataLoader
 from torch.utils.data.distributed import DistributedSampler
+import gc
 
 from SAM2.sam2.training.dataset.transforms import (
     ComposeAPI, RandomHorizontalFlip, RandomAffine,
@@ -92,12 +93,12 @@ class VOSDataset(VisionDataset):
                 )
             )
             
-            if f"{gt_mask}_{frame_num}" in self.cache_gt:
-                objects = self.cache_gt[f"{gt_mask}_{frame_num}"]
-            else:
-                mask = cv2.imread(gt_mask, 0)
-                objects = cv2.connectedComponents(mask)
-                self.cache_gt[f"{gt_mask}_{frame_num}"] = deepcopy(objects)
+            # if f"{gt_mask}_{frame_num}" in self.cache_gt:
+            #     objects = self.cache_gt[f"{gt_mask}_{frame_num}"]
+            # else:
+            mask = cv2.imread(gt_mask, 0)
+            objects = cv2.connectedComponents(mask)
+            # self.cache_gt[f"{gt_mask}_{frame_num}"] = deepcopy(objects)
                 
             #     print("mask")
             #     plt.imshow(mask)
@@ -149,7 +150,7 @@ class VOSDataset(VisionDataset):
                 objects = deepcopy(objects_temp)
                 
                 if iou2.sum() > iou1.sum():
-                    print("swapped!!")
+                    # print("swapped!!")
                     objects[objects==1] = 3
                     objects[objects==2] = 1
                     objects[objects==3] = 2
@@ -180,6 +181,9 @@ class VOSDataset(VisionDataset):
         )
 
         datapoint = self._transforms(datapoint)
+        ## del all variables except datapoint
+        del video, gt_frames, rgb_images, frame_num_list, images
+        gc.collect()
         return datapoint
 
     def __getitem__(self, idx):

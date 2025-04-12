@@ -16,7 +16,7 @@ from lora_qkv import wrap_decoder_lora, wrap_image_encoder_lora, custom_save_lor
 from omegaconf import OmegaConf
 import gc
 from evaluate import run_eval
-from utils import calculate_forgetting, insert_perf, rm_output_keys, Logger
+from utils import calculate_forgetting, insert_perf, rm_output_keys, Logger, override_config_with_args
 
 from torch.distributed.elastic.multiprocessing.errors import record
 
@@ -74,6 +74,9 @@ DOMAINS = ['regular', 'blood', 'bg_change', 'smoke', 'low_brightness']
 
 config = OmegaConf.load("config.yaml")
 config.notes = "CL-Kmean"
+config = override_config_with_args(config)
+print(OmegaConf.to_yaml(config))
+
 if is_main_process():
     logger = Logger(config, wandb_log=True)
     wandb.init(
