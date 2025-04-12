@@ -93,8 +93,8 @@ def calculate_forgetting(perf_dict, domain_idx, config, logger, tag="train"):
                     print("Video", idx, "Metric", metric, "of domain", domain, ":", perf_dict[domain][-1][idx][metric])
                     print("Metric", metric, "of domain", domain, ":", perf_dict[domain][-1][idx][metric])
                     print("Forgetting of domain", domain, ":", f)
-                avg_forgetting /= 3
-                avg_forgetting_prev /= 3
+                avg_forgetting /= 2
+                avg_forgetting_prev /= 2
                 print("Average forgetting:", avg_forgetting)
                 print("Average forgetting previous:", avg_forgetting_prev)
                 logger.log( {f"metric/test_avg_forgetting_{domain}_{metric}": avg_forgetting})

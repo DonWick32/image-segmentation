@@ -256,12 +256,12 @@ def get_set(config):
 
     DOMAINS = ['blood', 'bg_change', 'regular', 'smoke', 'low_brightness']
 
-    for vids in [test_vids, val_vids]:
+    for vids, parent_path in zip([test_vids, val_vids], [TEST_PATH, VAL_PATH]):
         temp_set = {}
         for domain in DOMAINS+['ground_truth']:
             temp_set[domain] = []
             for path in vids:
-                path = os.path.join(TEST_PATH, path)
+                path = os.path.join(parent_path, path)
                 temp_path = os.path.join(path, domain)
 
                 for view in ['left', 'right']:
@@ -307,7 +307,7 @@ def get_dataloader(domain, config):
     train_loader = DataLoader(
         train_dataset,
         batch_size=config.batch_size,
-        shuffle=False,
+        shuffle=False if config.distributed else True,
         num_workers=config.num_workers,
         collate_fn=partial(collate_fn, dict_key='all'),
         pin_memory=False,
@@ -320,7 +320,7 @@ def get_dataloader(domain, config):
         gt_frames=val_gt,
         max_frames=config.dataset.max_frames,
         max_frame_interval_skip=config.dataset.max_frame_interval_skip,
-        sliding=config.dataset.max_frames,
+        sliding=config.dataset.max_frames//2,
         training=False
     )
     
@@ -377,7 +377,7 @@ def get_train_dataloader(config):
     train_loader = DataLoader(
         train_dataset,
         batch_size=config.batch_size,
-        shuffle=False,
+        shuffle=False if config.distributed else True,
         num_workers=config.num_workers,
         collate_fn=partial(collate_fn, dict_key='all'),
         pin_memory=False,
@@ -390,7 +390,7 @@ def get_train_dataloader(config):
         gt_frames=val_gt,
         max_frames=config.dataset.max_frames,
         max_frame_interval_skip=config.dataset.max_frame_interval_skip,
-        sliding=config.dataset.max_frames,
+        sliding=config.dataset.max_frames//2,
         training=False
     )
     
