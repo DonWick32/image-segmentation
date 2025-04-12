@@ -55,19 +55,14 @@ srun torchrun \
   --rdzv_backend=c10d \
   --rdzv_endpoint=$head_node_ip:29500 \
   /scratch/gokuladethya.cse.nitt/image-segmentation/train_cl_kmean.py \
-  --notes "CL-Kmean" \
+  --notes "CL-Kmean KD" \
   --learning_rate 0.0001 \
   --epochs 5 \
   --dataset.max_frame_interval_skip 3 \
-  --loss_weights.loss_mask 20 \
-  --loss_weights.loss_dice 1 \
-  --loss_weights.loss_iou 1 \
-  --loss_weights.loss_class 1 \
-  --loss_config.supervise_all_iou true \
   --cl_config.evaluate_every_n_epochs 10 \
   --cl_config.knowledge_distillation 0.1 \
   --cl_kmean.reset_lora true \
-  --cl_kmean.knowledge_distillation false \
+  --cl_kmean.knowledge_distillation true \
   --lora.decoder false \
   --lora.image_encoder true \
   --lora.rank 8
