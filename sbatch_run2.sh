@@ -5,7 +5,7 @@
 #SBATCH --gres=gpu:2
 #SBATCH --partition=gpu
 #SBATCH --output=/scratch/gokuladethya.cse.nitt/fyp/slurm-%j.out
-#SBATCH --time=4-00:00:00
+#SBATCH --time=6-00:00:00
 
 echo "Allocated Gokul node: jobid:"
 squeue -a | grep gok
@@ -54,9 +54,11 @@ srun torchrun \
   --rdzv_id=$RANDOM \
   --rdzv_backend=c10d \
   --rdzv_endpoint=$head_node_ip:29500 \
-  /scratch/gokuladethya.cse.nitt/image-segmentation/train.py \
-  --notes "CL-baseline-naive"
-
+  /scratch/gokuladethya.cse.nitt/image-segmentation/train_cl_kmean.py \
+  --notes "CL-Kmean" \
+  --cl_config.knowledge_distillation 0.1 \
+  --cl_kmean.reset_lora true \
+  --cl_kmean.knowledge_distillation false
 
 
 srun torchrun \
@@ -65,9 +67,12 @@ srun torchrun \
   --rdzv_id=$RANDOM \
   --rdzv_backend=c10d \
   --rdzv_endpoint=$head_node_ip:29500 \
-  /scratch/gokuladethya.cse.nitt/image-segmentation/train.py \
-  --notes "CL-baseline-naive 2 epoch" \
-  --epochs 2
+  /scratch/gokuladethya.cse.nitt/image-segmentation/train_cl.py \
+  --notes "CL-KD Loss" \
+  --cl_config.knowledge_distillation 0.1 \
+  --cl_kmean.reset_lora false \
+  --cl_kmean.knowledge_distillation true
+
 
 srun torchrun \
   --nnodes=3 \
@@ -75,20 +80,40 @@ srun torchrun \
   --rdzv_id=$RANDOM \
   --rdzv_backend=c10d \
   --rdzv_endpoint=$head_node_ip:29500 \
-  /scratch/gokuladethya.cse.nitt/image-segmentation/train.py \
-  --notes "CL-baseline-naive decoder+encoder " \
-  --lora.decoder false 
+  /scratch/gokuladethya.cse.nitt/image-segmentation/train_cl_kmean.py \
+  --notes "CL-Kmean with KD" \
+  --cl_config.knowledge_distillation 0.1 \
+  --cl_kmean.reset_lora false \
+  --cl_kmean.knowledge_distillation true
 
 
 
-    srun torchrun \
+  srun torchrun \
+  --nnodes=3 \
+  --nproc_per_node=2 \
+  --rdzv_id=$RANDOM \
+  --rdzv_backend=c10d \
+  --rdzv_endpoint=$head_node_ip:29500 \
+  /scratch/gokuladethya.cse.nitt/image-segmentation/train_cl.py \
+  --notes "CL-KD Loss - 0.5 KD" \
+  --cl_config.knowledge_distillation 0.5 \
+  --cl_kmean.reset_lora false \
+  --cl_kmean.knowledge_distillation true
+
+
+
+
+
+
+
+  srun torchrun \
   --nnodes=3 \
   --nproc_per_node=2 \
   --rdzv_id=$RANDOM \
   --rdzv_backend=c10d \
   --rdzv_endpoint=$head_node_ip:29500 \
   /scratch/gokuladethya.cse.nitt/image-segmentation/train_single_domain.py \
-  --domain "blood" \
+  --domain "smoke" \
   --learning_rate 0.0001 \
   --epochs 20 \
   --evaluate_every_n_epochs 2 \
@@ -98,7 +123,57 @@ srun torchrun \
   --lora.image_encoder true \
   --lora.rank 8
 
- 
+    srun torchrun \
+  --nnodes=3 \
+  --nproc_per_node=2 \
+  --rdzv_id=$RANDOM \
+  --rdzv_backend=c10d \
+  --rdzv_endpoint=$head_node_ip:29500 \
+  /scratch/gokuladethya.cse.nitt/image-segmentation/train_single_domain.py \
+  --domain "low_brightness" \
+  --learning_rate 0.0001 \
+  --epochs 20 \
+  --evaluate_every_n_epochs 2 \
+  --dataset.max_frames 4 \
+  --dataset.max_frame_interval_skip 3 \
+  --lora.decoder false \
+  --lora.image_encoder true \
+  --lora.rank 8
+
+
+   srun torchrun \
+  --nnodes=3 \
+  --nproc_per_node=2 \
+  --rdzv_id=$RANDOM \
+  --rdzv_backend=c10d \
+  --rdzv_endpoint=$head_node_ip:29500 \
+  /scratch/gokuladethya.cse.nitt/image-segmentation/train_single_domain.py \
+  --domain "regular" \
+  --learning_rate 0.0001 \
+  --epochs 20 \
+  --evaluate_every_n_epochs 2 \
+  --dataset.max_frames 4 \
+  --dataset.max_frame_interval_skip 3 \
+  --lora.decoder false \
+  --lora.image_encoder true \
+  --lora.rank 8
+
+    srun torchrun \
+  --nnodes=3 \
+  --nproc_per_node=2 \
+  --rdzv_id=$RANDOM \
+  --rdzv_backend=c10d \
+  --rdzv_endpoint=$head_node_ip:29500 \
+  /scratch/gokuladethya.cse.nitt/image-segmentation/train_single_domain.py \
+  --domain "bg_change" \
+  --learning_rate 0.0001 \
+  --epochs 20 \
+  --evaluate_every_n_epochs 2 \
+  --dataset.max_frames 4 \
+  --dataset.max_frame_interval_skip 3 \
+  --lora.decoder false \
+  --lora.image_encoder true \
+  --lora.rank 8
 
 # CL-baseline-naive, CL-KD Loss, CL-Kmean
 
