@@ -139,7 +139,7 @@ if is_main_process():
 trainable_params = [param for name, param in model.named_parameters() if param.requires_grad]
 optimizer = torch.optim.AdamW(trainable_params, lr=config.learning_rate)
 
-DOMAINS = ['smoke', 'blood', 'low_brightness', 'bg_change' 'regular']
+DOMAINS = ['smoke', 'blood', 'low_brightness', 'bg_change', 'regular']
 
 
 val_performance = {i:[] for i in DOMAINS}
