@@ -49,6 +49,41 @@ export TORCH_DISTRIBUTED_DEBUG=INFO
 # export NCCL_NET_GDR_LEVEL=0
 
 
+   srun torchrun \
+  --nnodes=3 \
+  --nproc_per_node=2 \
+  --rdzv_id=$RANDOM \
+  --rdzv_backend=c10d \
+  --rdzv_endpoint=$head_node_ip:29500 \
+  /scratch/gokuladethya.cse.nitt/image-segmentation/train_single_domain.py \
+  --domain "regular" \
+  --learning_rate 0.0001 \
+  --epochs 20 \
+  --evaluate_every_n_epochs 2 \
+  --dataset.max_frames 4 \
+  --dataset.max_frame_interval_skip 3 \
+  --lora.decoder false \
+  --lora.image_encoder true \
+  --lora.rank 8
+
+    srun torchrun \
+  --nnodes=3 \
+  --nproc_per_node=2 \
+  --rdzv_id=$RANDOM \
+  --rdzv_backend=c10d \
+  --rdzv_endpoint=$head_node_ip:29500 \
+  /scratch/gokuladethya.cse.nitt/image-segmentation/train_single_domain.py \
+  --domain "bg_change" \
+  --learning_rate 0.0001 \
+  --epochs 20 \
+  --evaluate_every_n_epochs 2 \
+  --dataset.max_frames 4 \
+  --dataset.max_frame_interval_skip 3 \
+  --lora.decoder false \
+  --lora.image_encoder true \
+  --lora.rank 8
+
+
   srun torchrun \
   --nnodes=3 \
   --nproc_per_node=2 \
@@ -84,39 +119,6 @@ export TORCH_DISTRIBUTED_DEBUG=INFO
   --lora.rank 8
 
 
-   srun torchrun \
-  --nnodes=3 \
-  --nproc_per_node=2 \
-  --rdzv_id=$RANDOM \
-  --rdzv_backend=c10d \
-  --rdzv_endpoint=$head_node_ip:29500 \
-  /scratch/gokuladethya.cse.nitt/image-segmentation/train_single_domain.py \
-  --domain "regular" \
-  --learning_rate 0.0001 \
-  --epochs 20 \
-  --evaluate_every_n_epochs 2 \
-  --dataset.max_frames 4 \
-  --dataset.max_frame_interval_skip 3 \
-  --lora.decoder false \
-  --lora.image_encoder true \
-  --lora.rank 8
-
-    srun torchrun \
-  --nnodes=3 \
-  --nproc_per_node=2 \
-  --rdzv_id=$RANDOM \
-  --rdzv_backend=c10d \
-  --rdzv_endpoint=$head_node_ip:29500 \
-  /scratch/gokuladethya.cse.nitt/image-segmentation/train_single_domain.py \
-  --domain "bg_change" \
-  --learning_rate 0.0001 \
-  --epochs 20 \
-  --evaluate_every_n_epochs 2 \
-  --dataset.max_frames 4 \
-  --dataset.max_frame_interval_skip 3 \
-  --lora.decoder false \
-  --lora.image_encoder true \
-  --lora.rank 8
 
 # CL-baseline-naive, CL-KD Loss, CL-Kmean
 
