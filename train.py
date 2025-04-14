@@ -71,8 +71,7 @@ if is_main_process():
         project="CL-SAM2",
         config=OmegaConf.to_container(config),
         notes=config.notes,
-        entity=config.entity,
-        mode="online"
+        entity=config.entity
     )
     track_file_Type = [".py", ".sh", ".yaml", "ipynb", ".json", ".txt"]
     wandb.run.log_code(".", include_fn=lambda path: (
