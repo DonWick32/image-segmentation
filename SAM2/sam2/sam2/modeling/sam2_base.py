@@ -561,6 +561,23 @@ class SAM2Base(torch.nn.Module):
                         # then seek further among every r-th frames
                         prev_frame_idx = prev_frame_idx + (t_rel - 2) * stride
                 out = output_dict["non_cond_frame_outputs"].get(prev_frame_idx, None)
+
+                # print("Is non cond frame output empty:", len(output_dict["non_cond_frame_outputs"]) == 0)
+
+                # print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+                # print("Current frame idx:", frame_idx)
+                # print("Previous frame idx:", prev_frame_idx)
+                # print(self.num_maskmem)
+                # if out is not None:
+                #     print("Found previous frame output")
+                #     for key, value in out.items():
+                #         print(key)
+
+                #         if type(value) == torch.Tensor:
+                #             print("Tensor shape:", value.shape)
+                #         else:
+                #             print(len(value))
+                # print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
                 if out is None:
                     # If an unselected conditioning frame is among the last (self.num_maskmem - 1)
                     # frames, we still attend to it as if it's a non-conditioning frame.
