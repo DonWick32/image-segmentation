@@ -36,7 +36,10 @@ while true; do
         echo "[$(date)] Found new script: $script_name"
         chmod +x "$script"
         echo "Running $script_name with srun..."
-        srun bash "$script"
+    	cmd=$(cat "$script")
+	
+    	echo "Executing: $cmd"
+        srun "$cmd"
 
         # Mark as processed
         mv "$script" "$PROCESSED_DIR/$script_name"
