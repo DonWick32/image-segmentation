@@ -233,7 +233,7 @@ def train():
                         custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{domain}.pth"))
                         custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{prev_domain}.pth"))
                         output_old = model(batch)
-                        output_old = torch.stack([output_old[i]['multistep_pred_masks_high_res'].squeeze() for i in range(len(output))], 0)
+                        output_old = torch.stack([output_old[i]['multistep_pred_masks_high_res'].squeeze() for i in range(len(output_old))], 0)
                         
                         gc.collect()
                         torch.cuda.empty_cache()
