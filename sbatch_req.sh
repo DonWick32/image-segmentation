@@ -37,9 +37,10 @@ while true; do
         chmod +x "$script"
         echo "Running $script_name with srun..."
     	cmd=$(cat "$script")
-	
+        cmd="${cmd//\$head_node_ip/$head_node_ip}"
+        cmd="${cmd//\$RANDOM/$RANDOM}"
     	echo "Executing: $cmd"
-        srun bash -c "$cmd"
+        srun $cmd
 
         # Mark as processed
         mv "$script" "$PROCESSED_DIR/$script_name"
