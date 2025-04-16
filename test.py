@@ -47,5 +47,5 @@ _load_checkpoint(model, config.model.checkpoint)
 
 model.training = False
 annot_file = "val"
-perf = run_eval(model, monitor_vids['train'], 'smoke', os.path.join(config.dataset.annotation_path, f"{annot_file}.json"))
+perf = run_eval(model, monitor_vids['train'], 'smoke', os.path.join(config.dataset.point_annotation_path, f"{annot_file}.json"), os.path.join(config.dataset.box_annotation_path, f"{annot_file}.json"))
 print(perf)

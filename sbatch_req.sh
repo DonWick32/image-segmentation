@@ -28,7 +28,7 @@ export WANDB_MODE=online
 echo "Infinite job monitor running. Watching for scripts in $WATCH_DIR..."
 
 while true; do
-    for script in "$WATCH_DIR"/*.sh; do
+    for script in $(ls "$WATCH_DIR"/*.sh 2>/dev/null | sort -V); do
         [ -e "$script" ] || continue  # No .sh file found
 
         script_name=$(basename "$script")

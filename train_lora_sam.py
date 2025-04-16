@@ -195,7 +195,7 @@ def train():
                 if is_main_process():
                     for domain_prev in DOMAINS:
                         print(f"Evaluating prev domain: {domain_prev} performance")
-                        perf = run_eval(model.module, VAL_VIDS[0], domain_prev, os.path.join(config.dataset.annotation_path, f"test.json"))
+                        perf = run_eval(model.module, VAL_VIDS[0], domain_prev, os.path.join(config.dataset.point_annotation_path, f"test.json"), os.path.join(config.dataset.box_annotation_path, f"test.json"))
                         for k, v in perf.items():
                             logger.log({f"metric/{domain_prev}/{k}": v})
                         print(f"Performance of {domain_prev} domain: {perf}")

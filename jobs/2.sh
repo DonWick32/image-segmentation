@@ -1,0 +1,8 @@
+torchrun \
+  --nnodes=3 \
+  --nproc_per_node=2 \
+  --rdzv_id=$RANDOM \
+  --rdzv_backend=c10d \
+  --rdzv_endpoint=$head_node_ip:29500 \
+  /scratch/gokuladethya.cse.nitt/image-segmentation/train.py \
+  --notes "CL-baseline-naive"

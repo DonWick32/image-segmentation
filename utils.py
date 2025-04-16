@@ -66,7 +66,7 @@ def train_val_eval(val_performance, train_performance, model, domain_idx, config
         for domain_prev in DOMAINS[:domain_idx+1]:
             print(f"Evaluating prev domain: {domain_prev} performance")
             annot_file = "val" if type_ == "train" else "test"
-            perf = run_eval(model.module, monitor_vids[type_], domain, os.path.join(config.dataset.annotation_path, f"{annot_file}.json"))
+            perf = run_eval(model.module, monitor_vids[type_], domain, os.path.join(config.dataset.point_annotation_path, f"{annot_file}.json"), os.path.join(config.dataset.box_annotation_path, f"{annot_file}.json"))
             perf_total[domain_prev] = perf
             for k, v in perf.items():
                 logger.log( {f"{type_}_perf/{domain_prev}/{k}": v})
