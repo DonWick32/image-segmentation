@@ -1,0 +1,1502 @@
+{
+    "data/raw/SegSTRONGC_test/test/9/0/bg_change/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        395,
+                        777
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1522,
+                        868
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1436,
+                        676
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        373,
+                        798
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/0/bg_change/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        428,
+                        773
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1584,
+                        874
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1487,
+                        684
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        413,
+                        795
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/0/blood/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        395,
+                        777
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1522,
+                        868
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1436,
+                        676
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        373,
+                        798
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/0/blood/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        428,
+                        773
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1584,
+                        874
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1487,
+                        684
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        413,
+                        795
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/0/low_brightness/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        395,
+                        777
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1522,
+                        868
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1436,
+                        676
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        373,
+                        798
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/0/low_brightness/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        428,
+                        773
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1584,
+                        874
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1487,
+                        684
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        413,
+                        795
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/0/regular/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        395,
+                        777
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1522,
+                        868
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1436,
+                        676
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        373,
+                        798
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/0/regular/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        428,
+                        773
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1584,
+                        874
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1487,
+                        684
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        413,
+                        795
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/0/smoke/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        395,
+                        777
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1522,
+                        868
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1436,
+                        676
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        373,
+                        798
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/0/smoke/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        428,
+                        773
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1584,
+                        874
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1487,
+                        684
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        413,
+                        795
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/1/bg_change/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1487,
+                        631
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        429,
+                        815
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1387,
+                        642
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        382,
+                        708
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/1/bg_change/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1523,
+                        634
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        463,
+                        808
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1435,
+                        658
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        407,
+                        706
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/1/blood/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1487,
+                        631
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        429,
+                        815
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1387,
+                        642
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        382,
+                        708
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/1/blood/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1523,
+                        634
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        463,
+                        808
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1435,
+                        658
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        407,
+                        706
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/1/low_brightness/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1487,
+                        631
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        429,
+                        815
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1387,
+                        642
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        382,
+                        708
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/1/low_brightness/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1523,
+                        634
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        463,
+                        808
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1435,
+                        658
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        407,
+                        706
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/1/regular/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1487,
+                        631
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        429,
+                        815
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1387,
+                        642
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        382,
+                        708
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/1/regular/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1523,
+                        634
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        463,
+                        808
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1435,
+                        658
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        407,
+                        706
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/1/smoke/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1487,
+                        631
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        429,
+                        815
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1387,
+                        642
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        382,
+                        708
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/1/smoke/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1523,
+                        634
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        463,
+                        808
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1435,
+                        658
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        407,
+                        706
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/2/bg_change/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        408,
+                        792
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1531,
+                        678
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1458,
+                        507
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        434,
+                        705
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/2/bg_change/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        433,
+                        785
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1567,
+                        684
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1474,
+                        515
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        455,
+                        699
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/2/blood/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        408,
+                        792
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1531,
+                        678
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1458,
+                        507
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        434,
+                        705
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/2/blood/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        433,
+                        785
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1567,
+                        684
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1474,
+                        515
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        455,
+                        699
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/2/low_brightness/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        408,
+                        792
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1531,
+                        678
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1458,
+                        507
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        434,
+                        705
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/2/low_brightness/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        433,
+                        785
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1567,
+                        684
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1474,
+                        515
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        455,
+                        699
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/2/regular/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        408,
+                        792
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1531,
+                        678
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1458,
+                        507
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        434,
+                        705
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/2/regular/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        433,
+                        785
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1567,
+                        684
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1474,
+                        515
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        455,
+                        699
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/2/smoke/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        408,
+                        792
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1531,
+                        678
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1458,
+                        507
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        434,
+                        705
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_test/test/9/2/smoke/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        433,
+                        785
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1567,
+                        684
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1474,
+                        515
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        455,
+                        699
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    }
+}

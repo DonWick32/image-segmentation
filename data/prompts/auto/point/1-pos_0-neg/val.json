@@ -1,0 +1,1402 @@
+{
+    "data/raw/SegSTRONGC_val/val/1/0/bg_change/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        568,
+                        459
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1244,
+                        577
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        555,
+                        391
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1315,
+                        408
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/0/bg_change/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        608,
+                        456
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1321,
+                        553
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        593,
+                        389
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1404,
+                        379
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/0/blood/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        568,
+                        459
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1244,
+                        577
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        555,
+                        391
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1315,
+                        408
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/0/blood/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        608,
+                        456
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1321,
+                        553
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        593,
+                        389
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1404,
+                        379
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/0/low_brightness/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        568,
+                        459
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1244,
+                        577
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        555,
+                        391
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1315,
+                        408
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/0/low_brightness/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        608,
+                        456
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1321,
+                        553
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        593,
+                        389
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1404,
+                        379
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/0/regular/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        568,
+                        459
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1244,
+                        577
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        555,
+                        391
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1315,
+                        408
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/0/regular/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        608,
+                        456
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1321,
+                        553
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        593,
+                        389
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1404,
+                        379
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/0/smoke/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        568,
+                        459
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1244,
+                        577
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        555,
+                        391
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1315,
+                        408
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/0/smoke/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        608,
+                        456
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1321,
+                        553
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        593,
+                        389
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1404,
+                        379
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/1/bg_change/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1314,
+                        464
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        481,
+                        403
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        901,
+                        328
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {}
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/1/bg_change/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        520,
+                        406
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1355,
+                        454
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        945,
+                        319
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {}
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/1/blood/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1314,
+                        464
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        481,
+                        403
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        901,
+                        328
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {}
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/1/blood/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        520,
+                        406
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1355,
+                        454
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        945,
+                        319
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {}
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/1/low_brightness/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1314,
+                        464
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        481,
+                        403
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        901,
+                        328
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {}
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/1/low_brightness/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        520,
+                        406
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1355,
+                        454
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        945,
+                        319
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {}
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/1/regular/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1314,
+                        464
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        481,
+                        403
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        901,
+                        328
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {}
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/1/regular/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        520,
+                        406
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1355,
+                        454
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        945,
+                        319
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {}
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/1/smoke/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1314,
+                        464
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        481,
+                        403
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        901,
+                        328
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {}
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/1/smoke/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        520,
+                        406
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1355,
+                        454
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        945,
+                        319
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {}
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/2/bg_change/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        426,
+                        688
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1379,
+                        266
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        348,
+                        636
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1402,
+                        190
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/2/bg_change/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        448,
+                        687
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1436,
+                        247
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        384,
+                        639
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1472,
+                        170
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/2/blood/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        426,
+                        688
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1379,
+                        266
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        348,
+                        636
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1402,
+                        190
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/2/blood/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        448,
+                        687
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1436,
+                        247
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        384,
+                        639
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1472,
+                        170
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/2/low_brightness/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        426,
+                        688
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1379,
+                        266
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        348,
+                        636
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1402,
+                        190
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/2/low_brightness/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        448,
+                        687
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1436,
+                        247
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        384,
+                        639
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1472,
+                        170
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/2/regular/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        426,
+                        688
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1379,
+                        266
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        348,
+                        636
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1402,
+                        190
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/2/regular/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        448,
+                        687
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1436,
+                        247
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        384,
+                        639
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1472,
+                        170
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/2/smoke/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        426,
+                        688
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1379,
+                        266
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        348,
+                        636
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1402,
+                        190
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_val/val/1/2/smoke/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        448,
+                        687
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1436,
+                        247
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        384,
+                        639
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1472,
+                        170
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    }
+}

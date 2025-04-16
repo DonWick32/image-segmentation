@@ -1,0 +1,1102 @@
+{
+    "data/raw/SegSTRONGC_train/train/3/0/regular/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1410,
+                        232
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        333,
+                        802
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1378,
+                        238
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        652,
+                        849
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/3/0/regular/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1451,
+                        201
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        363,
+                        783
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1418,
+                        210
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        660,
+                        844
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/3/2/regular/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1212,
+                        167
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        668,
+                        851
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        432,
+                        777
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1374,
+                        192
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/3/2/regular/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1220,
+                        154
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        676,
+                        846
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        445,
+                        760
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1401,
+                        169
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/4/0/regular/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        426,
+                        545
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1385,
+                        421
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        406,
+                        718
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1386,
+                        189
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/4/0/regular/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        458,
+                        529
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1449,
+                        394
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        450,
+                        698
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1426,
+                        173
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/4/1/regular/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        422,
+                        584
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1387,
+                        479
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        389,
+                        490
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1367,
+                        310
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/4/1/regular/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        454,
+                        568
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1413,
+                        473
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        411,
+                        477
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1414,
+                        283
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/4/2/regular/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1300,
+                        420
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        372,
+                        494
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        490,
+                        719
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1387,
+                        144
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/4/2/regular/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1344,
+                        394
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        393,
+                        483
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        521,
+                        696
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1414,
+                        130
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/5/0/regular/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1422,
+                        749
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        447,
+                        459
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        416,
+                        455
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1539,
+                        583
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/5/0/regular/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1457,
+                        745
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        474,
+                        452
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        442,
+                        449
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1560,
+                        569
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/5/2/regular/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        355,
+                        471
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1522,
+                        557
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1462,
+                        571
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        416,
+                        474
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/5/2/regular/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        380,
+                        467
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1550,
+                        540
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1486,
+                        557
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        439,
+                        468
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/7/0/regular/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        351,
+                        635
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1466,
+                        385
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1408,
+                        525
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        281,
+                        437
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/7/0/regular/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        364,
+                        608
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1513,
+                        359
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1438,
+                        505
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        287,
+                        420
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/7/1/regular/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        376,
+                        649
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1539,
+                        440
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1326,
+                        252
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        694,
+                        873
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/7/1/regular/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        381,
+                        614
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1576,
+                        414
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1372,
+                        225
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        642,
+                        868
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/8/1/regular/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1159,
+                        211
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        398,
+                        841
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        484,
+                        807
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1227,
+                        153
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/8/1/regular/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1166,
+                        205
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        432,
+                        837
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        524,
+                        795
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        1227,
+                        151
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/8/2/regular/left": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1484,
+                        554
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        390,
+                        770
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1424,
+                        695
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        451,
+                        757
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    },
+    "data/raw/SegSTRONGC_train/train/8/2/regular/right": {
+        "0": {
+            "0": {
+                "points": [
+                    [
+                        1526,
+                        512
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        417,
+                        762
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        },
+        "299": {
+            "0": {
+                "points": [
+                    [
+                        1455,
+                        655
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            },
+            "1": {
+                "points": [
+                    [
+                        467,
+                        746
+                    ]
+                ],
+                "labels": [
+                    1
+                ]
+            }
+        }
+    }
+}
