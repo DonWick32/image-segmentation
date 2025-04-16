@@ -39,7 +39,7 @@ while true; do
     	cmd=$(cat "$script")
 	
     	echo "Executing: $cmd"
-        srun "$cmd"
+        srun $cmd
 
         # Mark as processed
         mv "$script" "$PROCESSED_DIR/$script_name"
