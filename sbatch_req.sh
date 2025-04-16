@@ -33,11 +33,6 @@ while true; do
 
         script_name=$(basename "$script")
 
-        # Skip if already processed
-        if [ -f "$PROCESSED_DIR/$script_name" ]; then
-            continue
-        fi
-
         echo "[$(date)] Found new script: $script_name"
         chmod +x "$script"
         echo "Running $script_name with srun..."
