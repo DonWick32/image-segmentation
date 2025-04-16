@@ -12,6 +12,10 @@ import torch.nn.functional as F
 
 from tqdm import tqdm
 
+import matplotlib.pyplot as plt
+import numpy as np
+import os
+
 from sam2.modeling.sam2_base import NO_OBJ_SCORE, SAM2Base
 from sam2.utils.misc import concat_points, fill_holes_in_mask_scores, load_video_frames
 
@@ -277,6 +281,9 @@ class SAM2VideoPredictor(SAM2Base):
             prev_sam_mask_logits=prev_sam_mask_logits,
         )
         # Add the output to the output dict (to be used as future memory)
+
+        # print("Frame idx: ", frame_idx, ", Storage key: ", storage_key)
+        # print("-----------------------------------------------------------")
         obj_temp_output_dict[storage_key][frame_idx] = current_out
 
         # Resize the output mask to the original video resolution
@@ -549,6 +556,8 @@ class SAM2VideoPredictor(SAM2Base):
         start_frame_idx=None,
         max_frame_num_to_track=None,
         reverse=False,
+        save_mask_logits=False,
+        infix_path=None
     ):
         """Propagate the input points across frames to track in the entire video."""
         self.propagate_in_video_preflight(inference_state)
@@ -582,6 +591,9 @@ class SAM2VideoPredictor(SAM2Base):
 
         for frame_idx in tqdm(processing_order, desc="propagate in video"):
             pred_masks_per_obj = [None] * batch_size
+            
+            mass_data = {}
+
             for obj_idx in range(batch_size):
                 obj_output_dict = inference_state["output_dict_per_obj"][obj_idx]
                 # We skip those frames already in consolidated outputs (these are frames
@@ -598,6 +610,9 @@ class SAM2VideoPredictor(SAM2Base):
                         self._clear_obj_non_cond_mem_around_input(
                             inference_state, frame_idx, obj_idx
                         )
+
+                    # print("Frame idx: ", frame_idx, ", Storage key: ", storage_key, " has cond frame outputs")
+                    # print("-----------------------------------------------------------")
                 else:
                     storage_key = "non_cond_frame_outputs"
                     current_out, pred_masks = self._run_single_frame_inference(
@@ -611,13 +626,84 @@ class SAM2VideoPredictor(SAM2Base):
                         reverse=reverse,
                         run_mem_encoder=True,
                     )
+
+                    # inga dhan
                     obj_output_dict[storage_key][frame_idx] = current_out
+
+                    # print("Frame idx: ", frame_idx, ", Storage key: ", storage_key, " new frame outputs")
+                    # print("-----------------------------------------------------------")
+
+                    # for key, value in obj_output_dict.items():
+                    #     print(f"{key} ------------------------------------------------")
+
+                    #     for key2, value2 in value.items():
+                    #         print(f"{key2}")
+
+                    #         print("===================================================")
+
+                    #         for key3, value3 in value2.items():
+
+                    #             if key3 == "maskmem_features":
+                    #                 print(f"{key3}, {value3.shape}")
+
+                    
+                    # print("-------------------------------------------------")
+
+                    # print(current_out, "HIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII")
 
                 inference_state["frames_tracked_per_obj"][obj_idx][frame_idx] = {
                     "reverse": reverse
                 }
-                pred_masks_per_obj[obj_idx] = pred_masks
+                pred_masks_per_obj[obj_idx] = pred_masks                     
 
+                if save_mask_logits:
+                    mass_data[obj_idx] = {
+                        "object_score_logits": current_out["object_score_logits"].cpu().item(),
+                        "pred_masks": pred_masks.cpu().numpy()
+                    }
+
+            # plot both masks side by side and save as single image. show the left obj score, right obj score and avg score in the image itself
+            # store the final image based on frame index alone since we have merged the two objects
+
+            if save_mask_logits:
+                img_width = 256 * len(mass_data)  # 256 pixels per object
+                img = np.zeros((256, img_width))
+                
+                # Plot masks side by side
+                for i in range(len(mass_data)):
+                    img[:, i*256:(i+1)*256] = mass_data[i]["pred_masks"]
+
+                plt.imshow(img)
+                plt.axis('off')
+
+                # Add score text for each object
+                for i in range(len(mass_data)):
+                    score = mass_data[i]["object_score_logits"]
+                    plt.text(
+                        5 + i*256, 10,
+                        f'Object score logits: {score}',
+                        color='yellow',
+                        fontsize=8,
+                        bbox=dict(facecolor='black', alpha=0.5, boxstyle='round,pad=0.2')
+                    )
+
+                # Add average score only if there are multiple objects
+                if len(mass_data) > 1:
+                    avg_score = sum([mass_data[0]["object_score_logits"], mass_data[1]["object_score_logits"]]) / len(mass_data)
+                    plt.text(
+                        256, 250,
+                        f'Avg score: {avg_score}',
+                        color='yellow',
+                        fontsize=8,
+                        bbox=dict(facecolor='black', alpha=0.5, boxstyle='round,pad=0.2')
+                    )
+
+                path = f'/home/nitish/Desktop/Personal/fyp/data/results/sam2.1_hiera_base_plus/visualizations/{infix_path}/{frame_idx}.jpg'
+
+                os.makedirs(os.path.dirname(path), exist_ok=True)
+                plt.savefig(path, bbox_inches='tight', pad_inches=0)
+                plt.close()
+            
             # Resize the output mask to the original video resolution (we directly use
             # the mask scores on GPU for output to avoid any CPU conversion in between)
             if len(pred_masks_per_obj) > 1:
@@ -627,6 +713,21 @@ class SAM2VideoPredictor(SAM2Base):
             _, video_res_masks = self._get_orig_video_res_output(
                 inference_state, all_pred_masks
             )
+
+            # plot the masks in video_res_masks and print the object scores
+
+
+            # print(current_out) # it has 'object_score_logits': tensor([[18.3750]], device='cuda:0', dtype=torch.bfloat16)
+
+            # print("Object")
+
+            # for key, value in current_out:
+            #     print("Key: ", key)
+            #     print("Value: ", value)
+
+            #     print("-------------------------------------------------")
+
+            # 0/0
             yield frame_idx, obj_ids, video_res_masks
 
     @torch.inference_mode()
