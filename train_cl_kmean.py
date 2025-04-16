@@ -70,7 +70,8 @@ local_rank = int(os.environ["LOCAL_RANK"])
 world_size = dist.get_world_size()
 device = torch.device(f"cuda:{local_rank}")
 
-DOMAINS = ['smoke', 'blood', 'low_brightness', 'bg_change', 'regular']
+# DOMAINS = ['smoke', 'blood', 'low_brightness', 'bg_change', 'regular']
+DOMAINS = ['regular', 'smoke', 'low_brightness', 'blood', 'bg_change']
 
 
 config = OmegaConf.load("config.yaml")
@@ -329,10 +330,10 @@ def train():
                     
                 logger.log_epoch_average()
                     
-    if is_main_process():
-        print(f"Saving wts of {domain} domain")
-        custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{domain}.pth"))
-        prev_domain = domain
+        if is_main_process():
+            print(f"Saving wts of {domain} domain")
+            custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{domain}.pth"))
+            prev_domain = domain
     
 
 if __name__ == '__main__':

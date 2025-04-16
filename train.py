@@ -58,7 +58,9 @@ local_rank = int(os.environ["LOCAL_RANK"])
 world_size = dist.get_world_size()
 device = torch.device(f"cuda:{local_rank}")
 
-DOMAINS = ['smoke', 'blood', 'low_brightness', 'bg_change', 'regular']
+# DOMAINS = ['smoke', 'blood', 'low_brightness', 'bg_change', 'regular']
+DOMAINS = ['regular', 'smoke', 'low_brightness', 'blood', 'bg_change']
+
 
 
 config = OmegaConf.load("config.yaml")
