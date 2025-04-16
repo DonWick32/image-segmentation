@@ -47,5 +47,5 @@ while true; do
         mv "$script" "$PROCESSED_DIR/$script_name"
         echo "[$(date)] Finished $script_name"
     done
-    sleep 10  # Check every 10 seconds
+    sleep 1  # Check every 10 seconds
 done
