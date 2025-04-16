@@ -81,6 +81,10 @@ def insert_perf(perf_dict, new_perf):
 def calculate_forgetting(perf_dict, domain_idx, config, logger, tag="train"):
     for i, domain in enumerate(DOMAINS[:domain_idx]):
         print("Domain performance history of domain", domain, perf_dict[domain])
+        if len(perf_dict[domain])<2:
+            print("Not enough performance history to calculate forgetting")
+            continue
+        
         if type(perf_dict[domain][-1]) == list:  
             for metric in perf_dict[domain][-1][-1].keys():
                 avg_forgetting = 0

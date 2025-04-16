@@ -189,24 +189,6 @@ def train():
         for epoch in range(0, config.epochs):
             train_loader.sampler.set_epoch(epoch)
             val_loader.sampler.set_epoch(epoch)
-                    
-            model.module.training = False
-            if is_main_process():
-                if (epoch == config.epochs - 1) or (epoch % config.cl_config.evaluate_every_n_epochs == 0):
-                    for perf_list, type_ in zip([val_performance, train_performance], ['val', 'train']):
-                        print(f"Evaluating {type_} performance from current domain {domain}")
-                        perf_total = {}
-                        for domain_prev in DOMAINS[:domain_idx+1]:
-                            print(f"Evaluating prev domain: {domain_prev} performance")
-                            annot_file = "val" if type_ == "train" else "test"
-                            perf = run_eval(model.module, monitor_vids[type_], domain_prev, os.path.join(config.dataset.point_annotation_path, f"{annot_file}.json"), os.path.join(config.dataset.box_annotation_path, f"{annot_file}.json"))
-                            perf_total[domain_prev] = perf
-                            for k, v in perf.items():
-                                logger.log({f"{type_}_perf/{domain_prev}/{k}": v})
-                            print(f"Performance of {domain_prev} domain: {perf}")
-                        insert_perf(perf_list, perf_total)
-                        calculate_forgetting(perf_list, domain_idx, config, logger, tag=type_)
-
 
             global_rank, local_rank, node_rank, world_size = get_info()
             torch.distributed.barrier()
@@ -280,6 +262,20 @@ def train():
                 model.module.training = False
 
                 if epoch == config.epochs - 1:
+                    for perf_list, type_ in zip([val_performance, train_performance], ['val', 'train']):
+                        print(f"Evaluating {type_} performance from current domain {domain}")
+                        perf_total = {}
+                        for domain_prev in DOMAINS[:domain_idx+1]:
+                            print(f"Evaluating prev domain: {domain_prev} performance")
+                            annot_file = "val" if type_ == "train" else "test"
+                            perf = run_eval(model.module, monitor_vids[type_], domain_prev, os.path.join(config.dataset.point_annotation_path, f"{annot_file}.json"), os.path.join(config.dataset.box_annotation_path, f"{annot_file}.json"))
+                            perf_total[domain_prev] = perf
+                            for k, v in perf.items():
+                                logger.log({f"{type_}_perf/{domain_prev}/{k}": v})
+                            print(f"Performance of {domain_prev} domain: {perf}")
+                        insert_perf(perf_list, perf_total)
+                        calculate_forgetting(perf_list, domain_idx, config, logger, tag=type_)
+                        
                     print(f"Evaluating test performance from current domain {domain}")
                     perf_total = {}
                     for domain_prev in DOMAINS[:domain_idx+1]:
@@ -304,9 +300,6 @@ def train():
 
 if __name__ == '__main__':
     seed_everything()
-    try:
-        train()
-    except Exception as e:
-        print(f"Rank {dist.get_rank()} failed: {e}")
+    train()
 
     cleanup_distributed()

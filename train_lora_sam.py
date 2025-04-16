@@ -212,9 +212,6 @@ def train():
 
 if __name__ == '__main__':
     seed_everything()
-    try:
-        train()
-    except Exception as e:
-        print(f"Rank {dist.get_rank()} failed: {e}")
+    train()
 
     cleanup_distributed()
