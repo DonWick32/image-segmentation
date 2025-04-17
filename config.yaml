@@ -21,6 +21,7 @@ dataset:
   max_frame_interval_skip: 3
   point_annotation_path: "data/prompts/auto/point/1-pos_0-neg/"
   box_annotation_path: "data/prompts/auto/box/groundingdino/"
+  use_box: false
 
 loss_weights:
   loss_mask: 20

@@ -5,3 +5,7 @@ checkpoints
 __pycache__
 wandb
 output
+data/**/*.jpg
+data/**/*.png
+data/**/*.mp4
+*:Zone.Identifier

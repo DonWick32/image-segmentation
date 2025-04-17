@@ -8,6 +8,7 @@ import cv2
 import gc
 from tqdm import tqdm
 from SAM2.sam2.sam2.build_sam import build_sam2_video_predictor
+from omegaconf import OmegaConf
 
 def calculate_iou(TP, FP, FN):
 	return TP / (TP + FP + FN)
@@ -124,23 +125,30 @@ def process_video(model, frames_path, sub_dir, annotation_path, is_left):
 	return miou, mdsc
 
 def run_eval(model, sub_dir, domain, point_annotation_path, box_annotation_path):
+	
 	left_video_frames_path = os.path.join(sub_dir, domain, "left")
 	right_video_frames_path = os.path.join(sub_dir, domain, "right")
+
+	config = OmegaConf.load("config.yaml")
+	use_box = config.dataset.use_box
 
 	point_left_miou, point_left_msdc = process_video(model, left_video_frames_path, sub_dir, point_annotation_path, True)
 	point_right_miou, point_right_msdc = process_video(model, right_video_frames_path, sub_dir, point_annotation_path, False)
 
-	box_left_miou, box_left_msdc = process_video(model, left_video_frames_path, sub_dir, box_annotation_path, True)
-	box_right_miou, box_right_msdc = process_video(model, right_video_frames_path, sub_dir, box_annotation_path, False)
-
 	point_overall_miou = (point_left_miou + point_right_miou) / 2
 	point_overall_msdc = (point_left_msdc + point_right_msdc) / 2
 
-	box_overall_miou = (box_left_miou + box_right_miou) / 2
-	box_overall_msdc = (box_left_msdc + box_right_msdc) / 2
+	perf = {"iou": point_overall_miou, "dsc": point_overall_msdc}
 
-	perf = {"box-iou": box_overall_miou, "box-dsc": box_overall_msdc,
-			"point-iou": point_overall_miou, "point-dsc": point_overall_msdc}
+	if use_box:
+		box_left_miou, box_left_msdc = process_video(model, left_video_frames_path, sub_dir, box_annotation_path, True)
+		box_right_miou, box_right_msdc = process_video(model, right_video_frames_path, sub_dir, box_annotation_path, False)
+
+		box_overall_miou = (box_left_miou + box_right_miou) / 2
+		box_overall_msdc = (box_left_msdc + box_right_msdc) / 2
+
+		perf["box-iou"] = box_overall_miou
+		perf["box-dsc"] = box_overall_msdc
 
 	return perf
 	# print(f"\nResults for {sub_dir}:")
@@ -155,7 +163,7 @@ if __name__ == "__main__":
 	DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 	CHECKPOINT = "checkpoints/sam2.1_hiera_base_plus.pt"
 	CONFIG = "configs/sam2.1/sam2.1_hiera_b+.yaml"
-	model = build_sam2_video_predictor(CONFIG, CHECKPOINT)
+	model = build_sam2_video_predictor(CONFIG, CHECKPOINT, DEVICE)
 	torch.autocast("cuda", dtype=torch.bfloat16)
 	annotation_path = "annotations/auto/test.json"
 
