@@ -40,6 +40,8 @@ while true; do
         cmd="${cmd//\$head_node_ip/$head_node_ip}"
         cmd="${cmd//\$RANDOM/$RANDOM}"
     	echo "Executing: $cmd"
+        ### add sleep
+        sleep 1
         srun $cmd
 
         # Mark as processed
