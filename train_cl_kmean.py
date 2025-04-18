@@ -104,6 +104,7 @@ else:
     while True:
         try:
             run_id = pickle.load(open(os.path.join(config.output_dir, "run_id.pkl"), "rb"))
+            break
         except:
             import time
             print("Waiting for main process to create run_id.pkl")
