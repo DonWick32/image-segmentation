@@ -112,8 +112,10 @@ else:
     
 
 torch.distributed.barrier()
+if is_main_process():
+    os.remove(os.path.join(config.output_dir, "run_id.pkl"))
 
-run_id = run_id if run_id else "ddp_run"
+
 
 PATH = config.dataset.path
 TEST_PATH = os.path.join(PATH, "SegSTRONGC_test/test/9/")
