@@ -200,15 +200,19 @@ def train():
                 output_old = None
                 if prev_domain is not None:
                     with torch.no_grad():
+                        torch.distributed.barrier()
                         custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"curr_lora_{domain}.pth"))
+                        torch.distributed.barrier()
                         custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{prev_domain}.pth"))
+                        torch.distributed.barrier()
                         output_old = model(batch)
                         output_old = torch.stack([output_old[i]['multistep_pred_masks_high_res'].squeeze() for i in range(len(output_old))], 0)
                         
                         gc.collect()
                         torch.cuda.empty_cache()
-                        
+                        torch.distributed.barrier()
                         custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"curr_lora_{domain}.pth"))
+                        torch.distributed.barrier()
                 
                 optimizer.zero_grad()
                 output = model(batch)
@@ -291,11 +295,15 @@ def train():
                     calculate_forgetting(test_performance, domain_idx, config, logger)
                     
                 logger.log_epoch_average()
+            
+            torch.distributed.barrier()
                     
         if is_main_process():
             print(f"Saving wts of {domain} domain")
             custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{domain}.pth"))
             prev_domain = domain
+            
+        torch.distributed.barrier()
     
 
 if __name__ == '__main__':
