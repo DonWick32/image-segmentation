@@ -79,6 +79,9 @@ config.notes = "CL-Kmean"
 config = override_config_with_args(config)
 print(OmegaConf.to_yaml(config))
 
+if os.path.exists(os.path.join(config.output_dir, "run_id.pkl")):
+    os.remove(os.path.join(config.output_dir, "run_id.pkl"))
+
 if is_main_process():
     logger = Logger(config, wandb_log=True)
     wandb.init(
@@ -114,8 +117,7 @@ else:
 torch.distributed.barrier()
 if is_main_process():
     os.remove(os.path.join(config.output_dir, "run_id.pkl"))
-
-
+    
 
 PATH = config.dataset.path
 TEST_PATH = os.path.join(PATH, "SegSTRONGC_test/test/9/")
@@ -277,7 +279,7 @@ def train():
 
                 core_loss = losses['core_loss']
                 if (prev_domain is not None) and (config.cl_kmean.knowledge_distillation):
-                    core_loss = config.cl_config.knowledge_distillation * kd_loss + (1-config.cl_config.knowledge_distillation) * core_loss
+                    core_loss = config.cl_config.knowledge_distillation * kd_loss['core_loss'] + (1-config.cl_config.knowledge_distillation) * core_loss
                     
                 core_loss.backward()
                 optimizer.step()
