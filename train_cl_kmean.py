@@ -17,7 +17,7 @@ from omegaconf import OmegaConf
 import gc
 from evaluate import run_eval
 from utils import calculate_forgetting, insert_perf, rm_output_keys, Logger, override_config_with_args
-
+import pickle
 from torch.distributed.elastic.multiprocessing.errors import record
 
 def seed_everything(seed=42):
@@ -94,13 +94,20 @@ if is_main_process():
         and (config.output_dir not in path)
     ))
     run_id = wandb.run.id
+    pickle.dump(run_id, open(os.path.join(config.output_dir, "run_id.pkl"), "wb"))
 
     if not os.path.exists(config.output_dir):
         os.mkdir(config.output_dir)
         
     os.mkdir(os.path.join(config.output_dir, run_id))
 else:
-    run_id = None
+    while True:
+        try:
+            run_id = pickle.load(open(os.path.join(config.output_dir, "run_id.pkl"), "rb"))
+        except:
+            import time
+            print("Waiting for main process to create run_id.pkl")
+            time.sleep(2)
     
 
 torch.distributed.barrier()
