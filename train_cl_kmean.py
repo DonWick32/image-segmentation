@@ -230,8 +230,11 @@ def train():
                 output_old = None
                 if (prev_domain is not None) and (config.cl_kmean.knowledge_distillation):
                     with torch.no_grad():
+                        torch.distributed.barrier()
                         custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{domain}.pth"))
+                        torch.distributed.barrier()
                         custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{prev_domain}.pth"))
+                        torch.distributed.barrier()
                         output_old = model(batch)
                         output_old = torch.stack([output_old[i]['multistep_pred_masks_high_res'].squeeze() for i in range(len(output_old))], 0)
                         
@@ -240,6 +243,8 @@ def train():
                         
                         custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{domain}.pth"))
                 
+                torch.distributed.barrier()
+                        
                 optimizer.zero_grad()
                 output = model(batch)
                 rm_output_keys(output)
@@ -330,7 +335,7 @@ def train():
         if is_main_process():
             print(f"Saving wts of {domain} domain")
             custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{domain}.pth"))
-            prev_domain = domain
+        prev_domain = domain
     
 
 if __name__ == '__main__':

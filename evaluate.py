@@ -8,7 +8,6 @@ import cv2
 import gc
 from tqdm import tqdm
 from SAM2.sam2.sam2.build_sam import build_sam2_video_predictor
-from omegaconf import OmegaConf
 
 def calculate_iou(TP, FP, FN):
 	return TP / (TP + FP + FN)
@@ -51,20 +50,12 @@ def run_inference(sam2_predictor, frames_path, annotation_path):
 	frames_path = 'data/raw/SegSTRONGC'+frames_path.split('SegSTRONGC')[-1]
 	current_annotations = annotations[frames_path]
 
-	first_frame_annotations = current_annotations[str(0)]
-
-	for object in tqdm(first_frame_annotations, desc=f"Processing annotations for objects"):
-		if "bbox" in first_frame_annotations[object]:
-			box = np.array(first_frame_annotations[object]["bbox"]["box"], dtype=np.float32)
-			_, out_obj_ids, out_mask_logits = sam2_predictor.add_new_points_or_box(
-				inference_state = inference_state,
-				frame_idx = 0,
-				obj_id = int(object),
-				box = box
-			)
-		elif "points" in first_frame_annotations[object]:
-			points = np.array(first_frame_annotations[object]["points"], dtype=np.float32)
-			labels = np.array(first_frame_annotations[object]["labels"], dtype=np.int32)
+	n_points = 0
+	for object in tqdm(current_annotations, desc=f"Processing annotations for objects"):
+		n_points += len(current_annotations[object])
+		for annotation in current_annotations[object]:
+			points = np.array([[int(annotation["x"]), int(annotation["y"])]], np.float32)
+			labels = np.array([annotation["label"]], np.int32)
 			_, out_obj_ids, out_mask_logits = sam2_predictor.add_new_points_or_box(
 				inference_state=inference_state,
 				frame_idx=0,
@@ -72,8 +63,6 @@ def run_inference(sam2_predictor, frames_path, annotation_path):
 				points=points,
 				labels=labels,
 			)
-		else:
-			print(f"Error: No points or box found for object {object} in frame 0.")
 				
 	video_segments = {}
 
@@ -124,32 +113,16 @@ def process_video(model, frames_path, sub_dir, annotation_path, is_left):
 
 	return miou, mdsc
 
-def run_eval(model, sub_dir, domain, point_annotation_path, box_annotation_path):
-	
+def run_eval(model, sub_dir, domain, annotation_path, box_annotation_path):
 	left_video_frames_path = os.path.join(sub_dir, domain, "left")
 	right_video_frames_path = os.path.join(sub_dir, domain, "right")
 
-	config = OmegaConf.load("config.yaml")
-	use_box = config.dataset.use_box
+	left_miou, left_msdc = process_video(model, left_video_frames_path, sub_dir, annotation_path, True)
+	right_miou, right_msdc = process_video(model, right_video_frames_path, sub_dir, annotation_path, False)
 
-	point_left_miou, point_left_msdc = process_video(model, left_video_frames_path, sub_dir, point_annotation_path, True)
-	point_right_miou, point_right_msdc = process_video(model, right_video_frames_path, sub_dir, point_annotation_path, False)
-
-	point_overall_miou = (point_left_miou + point_right_miou) / 2
-	point_overall_msdc = (point_left_msdc + point_right_msdc) / 2
-
-	perf = {"iou": point_overall_miou, "dsc": point_overall_msdc}
-
-	if use_box:
-		box_left_miou, box_left_msdc = process_video(model, left_video_frames_path, sub_dir, box_annotation_path, True)
-		box_right_miou, box_right_msdc = process_video(model, right_video_frames_path, sub_dir, box_annotation_path, False)
-
-		box_overall_miou = (box_left_miou + box_right_miou) / 2
-		box_overall_msdc = (box_left_msdc + box_right_msdc) / 2
-
-		perf["box-iou"] = box_overall_miou
-		perf["box-dsc"] = box_overall_msdc
-
+	overall_miou = (left_miou + right_miou) / 2
+	overall_msdc = (left_msdc + right_msdc) / 2
+	perf = {"iou": overall_miou, "dsc": overall_msdc}
 	return perf
 	# print(f"\nResults for {sub_dir}:")
 	# print(f"  Left: IoU={left_miou:.4f}, DSC={left_msdc:.4f}")
@@ -158,16 +131,13 @@ def run_eval(model, sub_dir, domain, point_annotation_path, box_annotation_path)
 			
 		
 if __name__ == "__main__":
-	dir = "data/raw/SegSTRONGC_test/test/9/0/"
+	dir = "../segstrong/SegSTRONGC_test/test/9/0/"
 	domain = "blood"
 	DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 	CHECKPOINT = "checkpoints/sam2.1_hiera_base_plus.pt"
 	CONFIG = "configs/sam2.1/sam2.1_hiera_b+.yaml"
-	model = build_sam2_video_predictor(CONFIG, CHECKPOINT, DEVICE)
+	model = build_sam2_video_predictor(CONFIG, CHECKPOINT)
 	torch.autocast("cuda", dtype=torch.bfloat16)
 	annotation_path = "annotations/auto/test.json"
 
-	point_annotation_path = 'data/prompts/auto/point/1-pos_0-neg/test.json'
-	box_annotation_path = "data/prompts/auto/box/groundingdino/test.json"
-
-	run_eval(model, dir, domain, point_annotation_path, box_annotation_path)
+	run_eval(model, dir, domain, annotation_path)

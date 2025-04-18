@@ -301,7 +301,7 @@ def train():
         if is_main_process():
             print(f"Saving wts of {domain} domain")
             custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{domain}.pth"))
-            prev_domain = domain
+        prev_domain = domain
             
         torch.distributed.barrier()
     
