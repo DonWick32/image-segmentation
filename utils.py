@@ -56,7 +56,7 @@ def rm_output_keys(output):
                 del output[o_idx][k]
 
 
-DOMAINS = ['regular', 'smoke', 'low_brightness', 'blood', 'bg_change']
+DOMAINS = ['smoke', 'blood', 'low_brightness', 'bg_change', 'regular']
 
 
 def train_val_eval(val_performance, train_performance, model, domain_idx, config, monitor_vids, domain, logger):
