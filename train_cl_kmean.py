@@ -231,7 +231,8 @@ def train():
                 if (prev_domain is not None) and (config.cl_kmean.knowledge_distillation):
                     with torch.no_grad():
                         torch.distributed.barrier()
-                        custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{domain}.pth"))
+                        if is_main_process():
+                            custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{domain}.pth"))
                         torch.distributed.barrier()
                         custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{prev_domain}.pth"))
                         torch.distributed.barrier()

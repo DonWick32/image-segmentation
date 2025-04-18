@@ -201,7 +201,8 @@ def train():
                 if prev_domain is not None:
                     with torch.no_grad():
                         torch.distributed.barrier()
-                        custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"curr_lora_{domain}.pth"))
+                        if is_main_process():
+                            custom_save_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"curr_lora_{domain}.pth"))
                         torch.distributed.barrier()
                         custom_load_lora_parameters(model.module, os.path.join(config.output_dir, run_id, f"lora_{prev_domain}.pth"))
                         torch.distributed.barrier()
