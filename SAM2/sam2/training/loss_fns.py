@@ -31,6 +31,10 @@ def dice_loss(inputs, targets, num_objects, loss_on_multimask=False):
     Returns:
         Dice loss tensor
     """
+    ### if targets absolute values greater than 1 then apply sigmoid:
+    if targets.max() > 1 or targets.min() < 0:
+        targets = targets.sigmoid()
+        
     inputs = inputs.sigmoid()
     if loss_on_multimask:
         # inputs and targets are [N, M, H, W] where M corresponds to multiple predicted masks
@@ -74,6 +78,8 @@ def sigmoid_focal_loss(
     Returns:
         focal loss tensor
     """
+    if targets.max() > 1 or targets.min() < 0:
+        targets = targets.sigmoid()
     prob = inputs.sigmoid()
     ce_loss = F.binary_cross_entropy_with_logits(inputs, targets, reduction="none")
     p_t = prob * targets + (1 - prob) * (1 - targets)
