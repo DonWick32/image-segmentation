@@ -64,7 +64,6 @@ device = torch.device(f"cuda:{local_rank}")
 config = OmegaConf.load("lora_sam_config.yaml")
 config.notes = f"Single domain {config.domain} training"
 config = override_config_with_args(config)
-config.domain = config.domain.replace('"','').replace("'", "")
 print(OmegaConf.to_yaml(config))
 
 if is_main_process():
@@ -149,6 +148,8 @@ log_metrics_history = {}
 
 @record
 def train():
+        config.domain = config.domain.replace('"','').replace("'", "")
+
         if is_main_process():
             print(f"===================Training domain {config.domain}===================")
 
