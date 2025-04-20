@@ -21,7 +21,10 @@ dataset:
   path: "../"
   max_frames: 4 # nbatches = 300/(max_frames//2)
   max_frame_interval_skip: 3
-  annotation_path:  "annotations/auto/"
+  point_annotation_path:  "annotations/auto/"
+  box_annotation_path: "data/prompts/auto/box/groundingdino/"
+  use_box: false
+
 
 loss_weights:
   loss_mask: 20
