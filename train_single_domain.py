@@ -148,12 +148,18 @@ log_metrics_history = {}
 
 @record
 def train():
-        config.domain = config.domain.replace('"','').replace("'", "")
+        config_domain = config.domain.replace('"','').replace("'", "")
+        ### regex to get the domain name
+        for domains_ in DOMAINS:
+            if domains_ in config_domain:
+                config_domain = domains_
+                break
+        
 
         if is_main_process():
-            print(f"===================Training domain {config.domain}===================")
+            print(f"===================Training domain {config_domain}===================")
 
-        train_loader, val_loader = get_dataloader(config.domain, config)
+        train_loader, val_loader = get_dataloader(config_domain, config)
         torch.distributed.barrier()
                 
         # Wrap with DistributedSampler
