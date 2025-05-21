@@ -20,7 +20,7 @@ from utils import calculate_forgetting, insert_perf, rm_output_keys, Logger, ove
 
 from torch.distributed.elastic.multiprocessing.errors import record
 
-DOMAINS = ['smoke', 'blood', 'low_brightness', 'bg_change', 'regular']
+DOMAINS = ['regular', 'bg_change', 'smoke', 'blood', 'low_brightness']
 
 
 config = OmegaConf.load("config.yaml")

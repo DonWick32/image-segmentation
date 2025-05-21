@@ -70,8 +70,8 @@ local_rank = int(os.environ["LOCAL_RANK"])
 world_size = dist.get_world_size()
 device = torch.device(f"cuda:{local_rank}")
 
-# DOMAINS = ['smoke', 'blood', 'low_brightness', 'bg_change', 'regular']
-DOMAINS = ['smoke', 'blood', 'low_brightness', 'bg_change', 'regular']
+# DOMAINS = ['regular', 'bg_change', 'smoke', 'blood', 'low_brightness']
+DOMAINS = ['regular', 'bg_change', 'smoke', 'blood', 'low_brightness']
 
 
 
