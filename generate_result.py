@@ -14,6 +14,7 @@ import time
 import gc
 import shutil
 import requests
+import sys
 from torchvision.ops import box_convert, nms
 
 from SAM2.sam2.sam2.build_sam import build_sam2_video_predictor
@@ -22,13 +23,33 @@ from sam2_model import get_model, _load_checkpoint
 from lora_qkv import wrap_decoder_lora, wrap_image_encoder_lora, custom_save_lora_parameters, custom_load_lora_parameters
 from omegaconf import OmegaConf
 
+import argparse
+
 # %%
 # !sudo mount -t drvfs E: /mnt/g
 # mogrify -format jpg *.png && rm *.png
 
 # %%
-RUN_DESCRIPTION = "video demo koothu bro, sadge"
-SPLITS_TO_RUN = ["test", "val", "train"]
+
+parser = argparse.ArgumentParser(description="Description of your program")
+
+parser.add_argument("-d", "--desc", type=str, help="Name of the user")
+parser.add_argument("-m", "--model_path", type=str, help="Model path")
+parser.add_argument("-t", "--perform_tta", type=str, help="Perform TTA")
+parser.add_argument("-b", "--box_prompt", type=str, help="Use box prompt")
+parser.add_argument("-o", "--domains", type=str, help="Domains to run")
+
+# example usage: python generate_demo.py --desc 'final-blood-box-tta-naive' --model-path 'checkpoints/sam2.1_hiera_base_plus.pt' --perform-tta True --box-prompt True --domain 'blood'
+
+args = parser.parse_args()
+arg_desc = args.desc
+arg_model_path = args.model_path
+arg_perform_tta = True if args.perform_tta.lower() == "true" else False
+arg_box_prompt = True if args.box_prompt.lower() == "true" else False
+arg_domain = args.domains
+
+RUN_DESCRIPTION = arg_desc
+# SPLITS_TO_RUN = ["train", "val", "test"]
 SPLITS_TO_RUN = ["test"]
 TOTAL_FRAMES_PER_VIDEO = 300
 
@@ -40,9 +61,8 @@ TRIAN_PATH = DATASET_ROOT_PATH + "/SegSTRONGC_train/train"
 USE_GOKUL_SPLIT = False
 
 VAL_FOLDERS = {"1": ["0", "1", "2"]}
-# VAL_FOLDERS = {"1": ["2"]}
-TEST_FOLDERS = {"9": ["0", "1", "2"]} 
-TEST_FOLDERS = {"9": ["1"]} ###############################################
+# TEST_FOLDERS = {"9": ["0", "1", "2"]} 
+TEST_FOLDERS = {"9": ["1", "2"]}
 TRAIN_FOLDERS = {"3": ["0", "2"], "4": ["0", "1", "2"], "5": ["0", "2"], "7": ["0", "1"], "8": ["1", "2"]}
 
 GOKUL_VAL_FOLDERS = {"9": ["0", "1"]}
@@ -51,22 +71,19 @@ GOKUL_TRAIN_FOLDERS = {"1": ["0", "1", "2"]}
 
 # domains (ground truth is 'ground_truth')
 VAL_DOMAINS = ['bg_change', 'blood', 'low_brightness', 'regular', 'smoke']
-# VAL_DOMAINS = ['smoke']
-TEST_DOMAINS = ['bg_change', 'blood', 'low_brightness', 'regular', 'smoke']
-TEST_DOMAINS = ['bg_change'] ##########################################
+# TEST_DOMAINS = ['bg_change', 'blood', 'low_brightness', 'regular', 'smoke']
+TEST_DOMAINS = arg_domain.split(",")
 TRAIN_DOMAINS = ['regular']
-FUNZ = 'base' ############################################################################
-CUSTOM_MODEL_CHECKPOINT = "checkpoints/scam/iconic/lora_bg_change.pth" #############################################
-RUN_CUSTOM_MODEL = False #################################################
+FUNZ = arg_desc
+CUSTOM_MODEL_CHECKPOINT = arg_model_path
+RUN_CUSTOM_MODEL = True 
 
 # prompts
 SHOULD_USE_MANUAL_PROMPT = False
-SHOULD_USE_BOX_PROMPT = True ######################################
-SHOULD_SAMPLE_GROUND_TRUTH = False ##############################################
+SHOULD_SAMPLE_GROUND_TRUTH = False 
 SHOULD_VISUALIZE_PROMPTS = False
-REFRESH_PROMPTS = False ####################################
-NUM_POS_POINTS_PER_TOOL = 1 #######################################
-NUM_NEG_POINTS_PER_TOOL = 1 #####################################
+NUM_POS_POINTS_PER_TOOL = 1 
+NUM_NEG_POINTS_PER_TOOL = 0
 PROMPTS_ROOT_PATH = "data/prompts"
 PROMPTING_STRATEGIES = ["first", "all", "dynamic"]
 PROMPTING_STRATEGY = PROMPTING_STRATEGIES[0] ################################
@@ -77,8 +94,15 @@ MODEL_PROMPT_TEXT_THRESHOLD = 0.25
 MODEL_PROMPT_NMS_THRESHOLD = 0.3
 MODEL_PROMPT_AREA_THRESHOLD = 0.9
 
+if arg_box_prompt:
+    SHOULD_USE_BOX_PROMPT = True
+    REFRESH_PROMPTS = False
+else:
+    SHOULD_USE_BOX_PROMPT = False
+    REFRESH_PROMPTS = True
+
 # test time adaptation
-SHOULD_PERFROM_CYCLIC_TTA = False
+SHOULD_PERFROM_CYCLIC_TTA = arg_perform_tta
 
 # results
 SAVE_RUN_MASK_LOGITS = False
@@ -89,7 +113,7 @@ MASKS_DIR = BASE_RESULTS_DIR + "/masks"
 
 # models
 MODELS = ["sam2.1_hiera_base_plus", "yolo11x-seg", "groundingdino-swinb"]
-INFERENCE_MODEL = MODELS[1] ################################################################
+INFERENCE_MODEL = MODELS[0]
 PROMPT_MODEL = MODELS[2]
 CHECKPOINTS = {
     "sam2.1_hiera_base_plus": "checkpoints/sam2.1_hiera_base_plus.pt",
@@ -104,7 +128,7 @@ MODEL_CONFIGS = {
 
 # logs
 LOG_DIR =  "logs"
-DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1360663640046571580/mNocZ3tLWiUVaMQTnOWqVRJU-HdI9onQuw0Wcr1xn8ZxRdvY51kuf9IcZ2qxRIBE21-x"
+DISCORD_WEBHOOK_URL = "https://discord.com/api/webhooks/1364958108031516712/WeJVXpT2S2JBKqmvK3-ZeDPDBIlm68I3TbdyCzXALvAE5axVqMo6m0IRu1rI61bcJ4ZY"
 
 # %%
 def get_image_paths(path, domain, is_left, num_images=300):
@@ -683,6 +707,7 @@ elif device.type == "mps":
         "See e.g. https://github.com/pytorch/pytorch/issues/84936 for a discussion."
     )
 
+
 if INFERENCE_MODEL == "sam2.1_hiera_base_plus":
     if RUN_CUSTOM_MODEL:
         config = OmegaConf.load("config.yaml")
@@ -697,6 +722,9 @@ if INFERENCE_MODEL == "sam2.1_hiera_base_plus":
         sam2_predictor.training = False
 
         sam2_predictor = sam2_predictor.to(device)
+
+        print("--------------------LOADED CUSTOM MODEL--------------------")
+        print("test domains: ", TEST_DOMAINS)
     else:
         sam2_predictor = build_sam2_video_predictor(inference_model_config, inference_model_checkpoint, device=device)
 
@@ -761,6 +789,11 @@ def run_inference(inference_model, frames_path, split, is_reverse, forward_pass_
                     count += 1
                 elif "points" in frame_annotations[tool]:
                     count += 1
+
+            if count == 1:
+                # use same annotations for both tools
+                frame_annotations[str(1)] = frame_annotations[str(0)]
+                count = 2
 
             for tool in frame_annotations:
                 if count != 2:
@@ -916,6 +949,7 @@ import os
 import datetime
 
 def process_video(frames_path, sub_dir, domain, split, is_left):
+    global SAVE_IMAGES_ONCE
     print("="*50)
     print(f"Processing video: {frames_path}")
     print(f"Domain: {domain}, Split: {split}, Camera: {'left' if is_left else 'right'}")
@@ -1311,15 +1345,15 @@ def process_split(sub_dirs, domains, split):
 for split in SPLITS_TO_RUN:
     if "val" == split:
         print("Running inference for validation split")
-        requests.post(DISCORD_WEBHOOK_URL, { "content": "Running inference for validation split", "username" : "val-runner"  })
+        requests.post(DISCORD_WEBHOOK_URL, { "content": f"Running {RUN_DESCRIPTION}", "username" : "val-runner"  })
         process_split(val_video_folders_path, VAL_DOMAINS, "val")
     elif "test" == split:
         print("Running inference for test split")
-        requests.post(DISCORD_WEBHOOK_URL, { "content": "Running inference for test split", "username" : "test-runner" })
+        requests.post(DISCORD_WEBHOOK_URL, { "content": f"Running {RUN_DESCRIPTION}", "username" : "test-runner" })
         process_split(test_video_folders_path, TEST_DOMAINS, "test")
     elif "train" == split:
         print("Running inference for train split")
-        requests.post(DISCORD_WEBHOOK_URL, { "content": "Running inference for train split", "username" : "train-runner"  })
+        requests.post(DISCORD_WEBHOOK_URL, { "content": f"Running {RUN_DESCRIPTION}", "username" : "train-runner"  })
         process_split(train_video_folders_path, TRAIN_DOMAINS, "train")
 
 # %%
